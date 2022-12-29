@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=animegui
+Exec=animegui
+Icon=com.github.izzthedude.AniMeGUI
+Terminal=false
+Type=Application
+Categories=GTK;
+StartupNotify=true
