@@ -25,6 +25,7 @@ gi.require_version("Adw", "1")
 from gi.repository import Gio, Adw
 
 from animegui.ui import AniMeGUIAppWindow
+from animegui.utils.gi_helpers import create_action
 
 
 class AniMeGUIApplication(Adw.Application):
@@ -34,9 +35,9 @@ class AniMeGUIApplication(Adw.Application):
             flags=Gio.ApplicationFlags.FLAGS_NONE
         )
 
-        self.create_action("preferences", self.on_preferences_action, ["<primary>comma"])
-        self.create_action("about", self.on_about_action)
-        self.create_action("quit", self.on_quit_action, ["<primary>q"])
+        create_action(self, "preferences", self.on_preferences_action, ["<primary>comma"])
+        create_action(self, "about", self.on_about_action)
+        create_action(self, "quit", self.on_quit_action, ["<primary>q"])
 
     def do_activate(self):
         win = self.props.active_window
@@ -61,13 +62,6 @@ class AniMeGUIApplication(Adw.Application):
 
     def on_quit_action(self, action: Gio.SimpleAction, param):
         self.quit()
-
-    def create_action(self, name, callback, shortcuts=None):
-        action = Gio.SimpleAction.new(name, None)
-        action.connect("activate", callback)
-        self.add_action(action)
-        if shortcuts:
-            self.set_accels_for_action(f"app.{name}", shortcuts)
 
 
 def main(version):
