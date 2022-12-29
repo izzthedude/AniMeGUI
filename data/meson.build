@@ -1,3 +1,7 @@
+pkgdatadir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
+
+gnome = import('gnome')
+
 desktop_file = i18n.merge_file(
         input: 'com.github.izzthedude.AniMeGUI.desktop.in',
        output: 'com.github.izzthedude.AniMeGUI.desktop',
@@ -27,6 +31,13 @@ endif
 
 install_data('com.github.izzthedude.AniMeGUI.gschema.xml',
   install_dir: join_paths(get_option('datadir'), 'glib-2.0/schemas')
+)
+
+gnome.compile_resources('animegui',
+  'com.github.izzthedude.AniMeGUI.gresource.xml',
+  gresource_bundle: true,
+  install: true,
+  install_dir: pkgdatadir,
 )
 
 compile_schemas = find_program('glib-compile-schemas', required: false)

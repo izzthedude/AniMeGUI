@@ -1,13 +1,5 @@
 pkgdatadir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
 moduledir = join_paths(pkgdatadir, 'animegui')
-gnome = import('gnome')
-
-gnome.compile_resources('animegui',
-  'animegui.gresource.xml',
-  gresource_bundle: true,
-  install: true,
-  install_dir: pkgdatadir,
-)
 
 python = import('python')
 
@@ -27,8 +19,8 @@ configure_file(
 
 animegui_sources = [
   '__init__.py',
-  'main.py',
-  'window.py',
+  'app.py',
 ]
 
+install_subdir('ui', install_dir: moduledir)
 install_data(animegui_sources, install_dir: moduledir)

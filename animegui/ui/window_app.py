@@ -1,4 +1,4 @@
-# window.py
+# window_app.py
 #
 # Copyright 2022 Izzat Z.
 #
@@ -20,11 +20,18 @@
 from gi.repository import Adw
 from gi.repository import Gtk
 
-@Gtk.Template(resource_path='/com/github/izzthedude/AniMeGUI/window.ui')
-class AnimeguiWindow(Adw.ApplicationWindow):
-    __gtype_name__ = 'AnimeguiWindow'
+
+@Gtk.Template(resource_path="/com/github/izzthedude/AniMeGUI/ui/app-window")
+class AniMeGUIAppWindow(Adw.ApplicationWindow):
+    __gtype_name__ = "AniMeGUIAppWindow"
 
     label = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self._setup_help_overlay()
+
+    def _setup_help_overlay(self):
+        builder: Gtk.Builder = Gtk.Builder.new_from_resource("/com/github/izzthedude/AniMeGUI/ui/help-overlay")
+        shortcuts_window: Gtk.ShortcutsWindow = builder.get_object("help_overlay")
+        self.set_help_overlay(shortcuts_window)

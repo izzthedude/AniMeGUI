@@ -31,7 +31,7 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "file:///home/izz/Projects"
+                    "url" : "file:///home/izz/Projects/AniMeGUI"
                 }
             ]
         }
