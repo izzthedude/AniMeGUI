@@ -78,7 +78,7 @@ class AniMeCLI:
         # Check if running inside flatpak
         self._initial_args: list = ["flatpak-spawn", "--host", "test"]
         try:
-            subprocess.check_call(self._initial_args)
+            subprocess.run(self._initial_args, check=True)
 
         except FileNotFoundError as err:
             # Just run straight from "asusctl blablabla" instead of "flatpak-spawn --host"
@@ -94,8 +94,21 @@ class AniMeCLI:
         """
         Start running the AniMe display with the arguments defined.
         """
-        args = self.__generate_args()
-        subprocess.check_call(args)
+        args = self.generate_command()
+        return subprocess.run(args)
+
+    def generate_command(self) -> list:
+        args = self._initial_args[0:]
+
+        for arg, value in self._data.as_dict().items():
+            arg = arg.replace("_", "-")
+            if "image" in self._initial_args and arg == "loops":
+                continue
+
+            args.append(f"--{arg}")
+            args.append(f"{value}")
+
+        return args
 
     def get_all_args(self) -> dict:
         return self._data.as_dict()
@@ -116,16 +129,3 @@ class AniMeCLI:
             return "gif"
         else:
             raise TypeError(f"asusctl only supports png and gif files. '{suffix}' was given.")
-
-    def __generate_args(self) -> list:
-        args = self._initial_args[0:]
-
-        for arg, value in self._data.as_dict().items():
-            arg = arg.replace("_", "-")
-            if "image" in self._initial_args and arg == "loops":
-                continue
-
-            args.append(f"--{arg}")
-            args.append(f"{value}")
-
-        return args
