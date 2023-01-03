@@ -41,7 +41,7 @@ class AniMeCLI:
             The brightness of the output between 0.0 - 1.0
         loops
             The number of loops that the given GIF will play. This only applies to ``.gif`` files. Set this to 0 for
-            endless looping.
+            endless looping
         """
         if not AniMeCLI.__instance:
             AniMeCLI.__instance = AniMeCLI(path, scale, x_pos, y_pos, angle, bright, loops)
@@ -92,6 +92,18 @@ class AniMeCLI:
         """
         self.__runner.terminate()
         return self.__runner.returncode
+
+    def clear(self) -> int:
+        """
+        Clear the AniMe display.
+
+        Returns
+        -------
+        int
+            The return code of the clear command.
+        """
+        command = self.__initial_command[0:-1] + ["--clear"]
+        return subprocess.run(command).returncode
 
     def is_running(self) -> bool:
         """
