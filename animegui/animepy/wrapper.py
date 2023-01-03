@@ -122,7 +122,7 @@ class AniMeCLI:
     def __generate_cli_args(self) -> list:
         args = []
 
-        for key, value in self.__data.as_dict().items():
+        for key, value in self.__data:
             key = key.replace("_", "-")
             if "image" in self.__initial_command and key == "loops":
                 continue

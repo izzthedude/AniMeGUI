@@ -8,6 +8,10 @@ class BaseData:
     def as_tuple(self):
         return astuple(self)
 
+    def __iter__(self):
+        for key, value in self.as_dict().items():
+            yield key, value
+
     def __getitem__(self, item):
         return getattr(self, item)
 
