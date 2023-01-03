@@ -1,29 +1,7 @@
 import subprocess
-from dataclasses import dataclass, asdict, astuple
 from pathlib import Path
 
-
-@dataclass
-class AniMeData:
-    path: str
-    scale: float
-    x_pos: float
-    y_pos: float
-    angle: float
-    bright: float
-    loops: int
-
-    def as_dict(self):
-        return asdict(self)
-
-    def as_tuple(self):
-        return astuple(self)
-
-    def __getitem__(self, item):
-        return getattr(self, item)
-
-    def __setitem__(self, item, value):
-        return setattr(self, item, value)
+from animegui.animepy.data import AniMeData
 
 
 class AniMeCLI:
@@ -128,4 +106,4 @@ class AniMeCLI:
         elif suffix == "gif":
             return "gif"
         else:
-            raise TypeError(f"asusctl only supports png and gif files. '{suffix}' was given.")
+            raise TypeError(f"asusctl only supports .png and .gif files. '{suffix}' was given.")
