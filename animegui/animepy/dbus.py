@@ -3,7 +3,7 @@ from gi.repository import Gio, GLib, GObject
 from animegui.utils.gi_helpers import get_variant
 
 
-class AniMeInterface:
+class AniMeDBus:
     DBUS_NAME = "org.asuslinux.Daemon"
     OBJECT_PATH = "/org/asuslinux/Anime"
 
@@ -32,8 +32,8 @@ class AniMeInterface:
     def SetOnOff(self, status: bool):
         self._call("SetOnOff", status)
 
-    def Write(self, data: object):
-        pass
+    # def Write(self, data: object):
+    #     pass
 
     def AwakeEnabled(self):
         return self.proxy.get_cached_property("AwakeEnabled")
@@ -55,12 +55,12 @@ class AniMeInterface:
                 Gio.DBusCallFlags.NONE,
                 GObject.G_MAXINT,
                 None,
-                self._on_call,
+                self._on_call_finished,
                 None
             )
 
         except Exception as err:
             print(err)
 
-    def _on_call(self, proxy: Gio.DBusProxy, task: Gio.Task, data):
+    def _on_call_finished(self, proxy: Gio.DBusProxy, task: Gio.Task, data):
         pass
