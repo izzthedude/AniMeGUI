@@ -8,7 +8,9 @@ class AniMeDBus:
     OBJECT_PATH = "/org/asuslinux/Anime"
 
     def __init__(self):
-        self.proxy: Gio.DBusProxy = Gio.DBusProxy.new_for_bus(
+        self.proxy: Gio.DBusProxy = None
+
+        Gio.DBusProxy.new_for_bus(
             Gio.BusType.SYSTEM,
             Gio.DBusProxyFlags.NONE,
             None,
@@ -16,21 +18,21 @@ class AniMeDBus:
             self.OBJECT_PATH,
             self.DBUS_NAME,
             None,
-            self._on_proxy_ready,
+            self.__on_proxy_ready,
             None
         )
 
     def RunMainLoop(self, start: bool):
-        self._call("RunMainLoop", start)
+        self.__call("RunMainLoop", start)
 
     def SetBootOnOff(self, on: bool):
-        self._call("SetBootOnOff", on)
+        self.__call("SetBootOnOff", on)
 
     def SetBrightness(self, brightness: float):
-        self._call("SetBrightness", brightness)
+        self.__call("SetBrightness", brightness)
 
     def SetOnOff(self, status: bool):
-        self._call("SetOnOff", status)
+        self.__call("SetOnOff", status)
 
     # def Write(self, data: object):
     #     pass
@@ -41,10 +43,10 @@ class AniMeDBus:
     def BootEnabled(self):
         return self.proxy.get_cached_property("BootEnabled")
 
-    def _on_proxy_ready(self, proxy: Gio.DBusProxy, task: Gio.Task, data):
-        self.proxy = proxy
+    def __on_proxy_ready(self, source: Gio.DBusProxy, result: Gio.Task, data):
+        self.proxy: Gio.DBusProxy = Gio.DBusProxy.new_for_bus_finish(result)
 
-    def _call(self, name, *args):
+    def __call(self, name, *args):
         variant_args = tuple(get_variant(p) for p in args)
         parameters = GLib.Variant.new_tuple(*variant_args) if args else None
 
@@ -55,12 +57,12 @@ class AniMeDBus:
                 Gio.DBusCallFlags.NONE,
                 GObject.G_MAXINT,
                 None,
-                self._on_call_finished,
+                self.__on_call_finished,
                 None
             )
 
         except Exception as err:
             print(err)
 
-    def _on_call_finished(self, proxy: Gio.DBusProxy, task: Gio.Task, data):
+    def __on_call_finished(self, source: Gio.DBusProxy, result: Gio.Task, data):
         pass
