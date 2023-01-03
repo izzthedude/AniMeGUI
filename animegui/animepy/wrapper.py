@@ -1,5 +1,6 @@
 import subprocess
 from pathlib import Path
+from subprocess import Popen
 
 from animegui.animepy.data import AniMeData
 
@@ -51,59 +52,82 @@ class AniMeCLI:
         if AniMeCLI.__instance:
             raise Exception("An instance of this class already exists. Use AniMeCLI.instance() to get it.")
 
-        self._data: AniMeData = AniMeData(path, scale, x_pos, y_pos, angle, bright, loops)
+        self.__data: AniMeData = AniMeData(path, scale, x_pos, y_pos, angle, bright, loops)
+        self.__runner: Popen = None
 
         # Check if running inside flatpak
-        self._initial_args: list = ["flatpak-spawn", "--host", "test"]
+        self.__initial_command: list = ["flatpak-spawn", "--host", "test"]
         try:
-            subprocess.run(self._initial_args, check=True)
+            subprocess.run(self.__initial_command, check=True)
 
         except FileNotFoundError as err:
             # Just run straight from "asusctl blablabla" instead of "flatpak-spawn --host"
-            self._initial_args.clear()
+            self.__initial_command.clear()
 
         except Exception as err:
             print(err)
 
-        self._initial_args.remove("test")
-        self._initial_args += ["asusctl", "anime", self.__check_path_type()]
+        self.__initial_command += ["asusctl", "anime", self.__check_path_type()]
+        if "test" in self.__initial_command:
+            self.__initial_command.remove("test")
 
     def run(self):
         """
         Start running the AniMe display with the arguments defined.
         """
-        args = self.generate_command()
-        return subprocess.run(args)
+        if not self.__runner or not self.is_running():
+            args = self.__generate_cli_args()
+            command = self.__initial_command + args
+            self.__runner = Popen(command)
+            return self.__runner
 
-    def generate_command(self) -> list:
-        args = self._initial_args[0:]
+    def terminate(self) -> int:
+        """
+        Terminate the running AniMe process.
 
-        for arg, value in self._data.as_dict().items():
-            arg = arg.replace("_", "-")
-            if "image" in self._initial_args and arg == "loops":
+        Returns
+        -------
+        int
+            The return code of the runner.
+        """
+        self.__runner.terminate()
+        return self.__runner.returncode
+
+    def is_running(self) -> bool:
+        """
+        Check if the AniMe process is currently running.
+        """
+        return self.__runner and self.__runner.poll() is None
+
+    def get_all_args(self) -> dict:
+        return self.__data.as_dict()
+
+    def get_arg(self, arg: str):
+        return self.__data[arg]
+
+    def set_arg(self, arg: str, value):
+        self.__data[arg] = value
+
+    def __check_path_type(self) -> str:
+        path = Path(self.__data.path)
+        suffix = path.suffix
+
+        if suffix == ".png":
+            return "image"
+        elif suffix == ".gif":
+            return "gif"
+        else:
+            raise TypeError(f"asusctl only supports .png and .gif files: '{suffix}' was given.")
+
+    def __generate_cli_args(self) -> list:
+        args = []
+
+        for key, value in self.__data.as_dict().items():
+            key = key.replace("_", "-")
+            if "image" in self.__initial_command and key == "loops":
                 continue
 
-            args.append(f"--{arg}")
+            args.append(f"--{key}")
             args.append(f"{value}")
 
         return args
-
-    def get_all_args(self) -> dict:
-        return self._data.as_dict()
-
-    def get_arg(self, arg: str):
-        return self._data[arg]
-
-    def set_arg(self, arg: str, value):
-        self._data[arg] = value
-
-    def __check_path_type(self) -> str:
-        path = Path(self._data.path)
-        suffix = path.suffix[1:]
-
-        if suffix == "png":
-            return "image"
-        elif suffix == "gif":
-            return "gif"
-        else:
-            raise TypeError(f"asusctl only supports .png and .gif files. '{suffix}' was given.")
