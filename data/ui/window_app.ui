@@ -38,56 +38,7 @@
           <object class="GtkBox" id="content_box">
             <property name="orientation">vertical</property>
             <child>
-              <object class="AdwViewStack" id="content_stack">
-                <child>
-                  <object class="AdwViewStackPage" id="general_page">
-                    <property name="name">general_page</property>
-                    <property name="title">General</property>
-                    <property name="icon-name">tv-symbolic</property>
-                    <property name="child">
-                      <object class="GtkLabel" id="label">
-                        <property name="label">General</property>
-                        <property name="vexpand">true</property>
-                        <style>
-                          <class name="title-1"/>
-                        </style>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwViewStackPage" id="presets_page">
-                    <property name="name">presets_page</property>
-                    <property name="title">Presets</property>
-                    <property name="icon-name">open-book-symbolic</property>
-                    <property name="child">
-                      <object class="GtkLabel" id="label1">
-                        <property name="label">Presets</property>
-                        <property name="vexpand">true</property>
-                        <style>
-                          <class name="title-1"/>
-                        </style>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwViewStackPage" id="live_page">
-                    <property name="name">live_page</property>
-                    <property name="title">Live</property>
-                    <property name="icon-name">camera-photo-symbolic</property>
-                    <property name="child">
-                      <object class="GtkLabel" id="label2">
-                        <property name="label">Live</property>
-                        <property name="vexpand">true</property>
-                        <style>
-                          <class name="title-1"/>
-                        </style>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-              </object>
+              <object class="AdwViewStack" id="content_stack"/>
             </child>
             <child>
               <object class="AdwViewSwitcherBar">

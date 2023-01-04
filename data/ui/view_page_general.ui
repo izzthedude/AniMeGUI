@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  <template class="GeneralPageView" parent="GtkScrolledWindow">
+    <child>
+      <object class="GtkLabel" id="label">
+        <property name="label">General</property>
+        <property name="vexpand">true</property>
+        <style>
+          <class name="title-1"/>
+        </style>
+      </object>
+    </child>
+  </template>
+</interface>

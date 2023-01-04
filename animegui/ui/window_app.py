@@ -19,6 +19,11 @@
 
 from gi.repository import Adw, Gtk
 
+from animegui.ui.view_base import BasePageView
+from animegui.ui.view_page_general import GeneralPageView
+from animegui.ui.view_page_live import LivePageView
+from animegui.ui.view_page_presets import PresetsPageView
+
 
 @Gtk.Template(resource_path="/com/github/izzthedude/AniMeGUI/ui/app-window")
 class AniMeGUIAppWindow(Adw.ApplicationWindow):
@@ -30,13 +35,19 @@ class AniMeGUIAppWindow(Adw.ApplicationWindow):
     switcher_title: Adw.ViewSwitcherTitle = Gtk.Template.Child()
     content_stack: Adw.ViewStack = Gtk.Template.Child()
 
-    general_page: Adw.ViewStackPage = Gtk.Template.Child()
-    presets_page: Adw.ViewStackPage = Gtk.Template.Child()
-    live_page: Adw.ViewStackPage = Gtk.Template.Child()
+    general_view: GeneralPageView = GeneralPageView()
+    presets_view: PresetsPageView = PresetsPageView()
+    live_view: LivePageView = LivePageView()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._setup_help_overlay()
+        self._add_views(self.general_view, self.presets_view, self.live_view)
+
+    def _add_views(self, *args: BasePageView):
+        for view in args:
+            name, title, icon = view._define_stackpage()
+            self.content_stack.add_titled_with_icon(view, name, title, icon)
 
     def _setup_help_overlay(self):
         builder: Gtk.Builder = Gtk.Builder.new_from_resource("/com/github/izzthedude/AniMeGUI/ui/help-overlay")

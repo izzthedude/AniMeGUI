@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="animegui">
-	<schema id="com.github.izzthedude.AniMeGUI" path="/com/github/izzthedude/AniMeGUI/">
-	</schema>
+  <schema id="com.github.izzthedude.AniMeGUI" path="/com/github/izzthedude/AniMeGUI/">
+  </schema>
 </schemalist>
