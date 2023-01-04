@@ -17,15 +17,22 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from gi.repository import Adw
-from gi.repository import Gtk
+from gi.repository import Adw, Gtk
 
 
 @Gtk.Template(resource_path="/com/github/izzthedude/AniMeGUI/ui/app-window")
 class AniMeGUIAppWindow(Adw.ApplicationWindow):
     __gtype_name__ = "AniMeGUIAppWindow"
 
-    label = Gtk.Template.Child()
+    header_bar: Adw.HeaderBar = Gtk.Template.Child()
+    header_title_box: Gtk.Box = Gtk.Template.Child()
+
+    switcher_title: Adw.ViewSwitcherTitle = Gtk.Template.Child()
+    content_stack: Adw.ViewStack = Gtk.Template.Child()
+
+    general_page: Adw.ViewStackPage = Gtk.Template.Child()
+    presets_page: Adw.ViewStackPage = Gtk.Template.Child()
+    live_page: Adw.ViewStackPage = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

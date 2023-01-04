@@ -3,29 +3,100 @@
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.0"/>
   <template class="AniMeGUIAppWindow" parent="AdwApplicationWindow">
-    <property name="default-width">800</property>
-    <property name="default-height">500</property>
+    <property name="default-width">1000</property>
+    <property name="default-height">700</property>
     <property name="title">AniMe GUI</property>
     <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkHeaderBar" id="header_bar">
+          <object class="AdwHeaderBar" id="header_bar">
+            <property name="centering-policy">strict</property>
+            <property name="title-widget">
+              <object class="GtkBox" id="header_title_box">
+                <child>
+                  <object class="AdwViewSwitcherTitle" id="switcher_title">
+                    <property name="stack">content_stack</property>
+                  </object>
+                </child>
+              </object>
+            </property>
             <child type="end">
-              <object class="GtkMenuButton">
-                <property name="icon-name">open-menu-symbolic</property>
-                <property name="menu-model">primary_menu</property>
+              <object class="GtkBox" id="header_end_box">
+                <child>
+                  <object class="GtkMenuButton">
+                    <property name="focus-on-click">false</property>
+                    <property name="icon-name">open-menu-symbolic</property>
+                    <property name="menu-model">primary_menu</property>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
         </child>
         <child>
-          <object class="GtkLabel" id="label">
-            <property name="label">Hello, World!</property>
-            <property name="vexpand">true</property>
-            <style>
-              <class name="title-1"/>
-            </style>
+          <object class="GtkBox" id="content_box">
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="AdwViewStack" id="content_stack">
+                <child>
+                  <object class="AdwViewStackPage" id="general_page">
+                    <property name="name">general_page</property>
+                    <property name="title">General</property>
+                    <property name="icon-name">tv-symbolic</property>
+                    <property name="child">
+                      <object class="GtkLabel" id="label">
+                        <property name="label">General</property>
+                        <property name="vexpand">true</property>
+                        <style>
+                          <class name="title-1"/>
+                        </style>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwViewStackPage" id="presets_page">
+                    <property name="name">presets_page</property>
+                    <property name="title">Presets</property>
+                    <property name="icon-name">open-book-symbolic</property>
+                    <property name="child">
+                      <object class="GtkLabel" id="label1">
+                        <property name="label">Presets</property>
+                        <property name="vexpand">true</property>
+                        <style>
+                          <class name="title-1"/>
+                        </style>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwViewStackPage" id="live_page">
+                    <property name="name">live_page</property>
+                    <property name="title">Live</property>
+                    <property name="icon-name">camera-photo-symbolic</property>
+                    <property name="child">
+                      <object class="GtkLabel" id="label2">
+                        <property name="label">Live</property>
+                        <property name="vexpand">true</property>
+                        <style>
+                          <class name="title-1"/>
+                        </style>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwViewSwitcherBar">
+                <property name="stack">content_stack</property>
+                <binding name="reveal">
+                  <lookup name="title-visible">switcher_title</lookup>
+                </binding>
+              </object>
+            </child>
           </object>
         </child>
       </object>
@@ -34,15 +105,15 @@
   <menu id="primary_menu">
     <section>
       <item>
-        <attribute name="label" translatable="yes">_Preferences</attribute>
+        <attribute name="label" translatable="yes">Preferences</attribute>
         <attribute name="action">app.preferences</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
+        <attribute name="label" translatable="yes">Keyboard Shortcuts</attribute>
         <attribute name="action">win.show-help-overlay</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">_About AniMeGUI</attribute>
+        <attribute name="label" translatable="yes">About AniMeGUI</attribute>
         <attribute name="action">app.about</attribute>
       </item>
     </section>
