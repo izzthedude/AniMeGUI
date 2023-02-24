@@ -2,9 +2,6 @@
 <gresources>
   <gresource prefix="/com/github/izzthedude/AniMeGUI/ui">
     <file preprocess="xml-stripblanks" alias="app-window">ui/window_app.ui</file>
-    <file preprocess="xml-stripblanks" alias="general-page">ui/view_page_general.ui</file>
-    <file preprocess="xml-stripblanks" alias="presets-page">ui/view_page_presets.ui</file>
-    <file preprocess="xml-stripblanks" alias="live-page">ui/view_page_live.ui</file>
     <file preprocess="xml-stripblanks" alias="help-overlay">ui/help_overlay.ui</file>
   </gresource>
   <gresource prefix="/com/github/izzthedude/AniMeGUI/icons">

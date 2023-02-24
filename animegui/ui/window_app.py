@@ -19,7 +19,7 @@
 
 from gi.repository import Adw, Gtk
 
-from animegui.ui.view_base import BasePageView
+from animegui.ui.view_page_base import BasePageView
 from animegui.ui.view_page_general import GeneralPageView
 from animegui.ui.view_page_live import LivePageView
 from animegui.ui.view_page_presets import PresetsPageView
