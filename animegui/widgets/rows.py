@@ -71,7 +71,7 @@ class ButtonActionRow(BaseActionRow):
             **kwargs):
         self.box: Gtk.Box = Gtk.Box(
             valign=Gtk.Align.CENTER,
-            spacing=5
+            spacing=10
         )
         self.label: Gtk.Label = Gtk.Label()
         self.label.add_css_class("dim-label")
@@ -109,9 +109,11 @@ class EntryActionRow(BaseActionRow):
             title: str,
             subtitle: str,
             **kwargs):
+        self.box: Gtk.Box = Gtk.Box(valign=Gtk.Align.CENTER)
         self.entry: Gtk.Entry = Gtk.Entry()
+        self.box.append(self.entry)
 
-        super().__init__(parent_group, title, subtitle, self.entry, None)
+        super().__init__(parent_group, title, subtitle, self.box, None)
 
 
 class NameParameter(EntryActionRow):
