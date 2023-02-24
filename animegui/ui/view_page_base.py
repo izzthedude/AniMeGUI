@@ -6,7 +6,14 @@ class BasePageView(Gtk.ScrolledWindow):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.content_box: Gtk.Box = Gtk.Box()
+        self.content_box: Gtk.Box = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+            margin_top=30,
+            margin_start=100,
+            margin_end=100,
+            margin_bottom=30,
+            spacing=30
+        )
         self.set_child(self.content_box)
 
         self.debug_label: Gtk.Label = Gtk.Label(
