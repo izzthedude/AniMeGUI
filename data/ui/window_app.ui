@@ -12,6 +12,32 @@
         <child>
           <object class="AdwHeaderBar" id="header_bar">
             <property name="centering-policy">strict</property>
+            <child type="start">
+              <object class="GtkBox" id="header_start_box">
+                <child>
+                  <object class="GtkButton" id="stop_btn">
+                    <property name="focus-on-click">false</property>
+                    <property name="icon-name">media-playback-stop-symbolic</property>
+                    <property name="visible">false</property>
+                    <property name="tooltip-text">Stop current AniMe image/animation</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="start_btn">
+                    <property name="focus-on-click">false</property>
+                    <property name="icon-name">media-playback-start-symbolic</property>
+                    <property name="tooltip-text">Start AniMe image/animation</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="clear_btn">
+                    <property name="focus-on-click">false</property>
+                    <property name="icon-name">edit-clear-all-symbolic</property>
+                    <property name="tooltip-text">Clear current AniMe image/animation</property>
+                  </object>
+                </child>
+              </object>
+            </child>
             <property name="title-widget">
               <object class="GtkBox" id="header_title_box">
                 <child>
