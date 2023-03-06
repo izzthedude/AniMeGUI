@@ -17,19 +17,43 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from gi.repository import Adw
-from gi.repository import Gtk
+from gi.repository import Adw, Gtk
+
+from animegui.ui.view_page_base import BasePageView
+from animegui.ui.view_page_general import GeneralPageView
+from animegui.ui.view_page_live import LivePageView
+from animegui.ui.view_page_presets import PresetsPageView
 
 
 @Gtk.Template(resource_path="/com/github/izzthedude/AniMeGUI/ui/app-window")
 class AniMeGUIAppWindow(Adw.ApplicationWindow):
     __gtype_name__ = "AniMeGUIAppWindow"
 
-    label = Gtk.Template.Child()
+    header_bar: Adw.HeaderBar = Gtk.Template.Child()
+    header_title_box: Gtk.Box = Gtk.Template.Child()
+    stop_btn: Gtk.Button = Gtk.Template.Child()
+    start_btn: Gtk.Button = Gtk.Template.Child()
+    clear_btn: Gtk.Button = Gtk.Template.Child()
+
+    switcher_title: Adw.ViewSwitcherTitle = Gtk.Template.Child()
+    content_stack: Adw.ViewStack = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._setup_help_overlay()
+
+        self.general_view = GeneralPageView()
+        self.presets_view = PresetsPageView()
+        self.live_view = LivePageView()
+        self._add_views(self.general_view, self.presets_view, self.live_view)
+
+        self.general_view.file_chooser_row.set_transient_for(self)
+
+    def _add_views(self, *args: BasePageView):
+        for view in args:
+            view.set_parent_window(self)
+            name, title, icon = view._define_stackpage()
+            self.content_stack.add_titled_with_icon(view, name, title, icon)
 
     def _setup_help_overlay(self):
         builder: Gtk.Builder = Gtk.Builder.new_from_resource("/com/github/izzthedude/AniMeGUI/ui/help-overlay")

@@ -11,7 +11,8 @@
     "--device=dri",
     "--socket=wayland",
     "--socket=system-bus",
-    "--socket=session-bus"
+    "--socket=session-bus",
+    "--filesystem=xdg-run/gvfsd"
   ],
   "cleanup": [
     "/include",

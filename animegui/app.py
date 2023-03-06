@@ -20,10 +20,12 @@
 import sys
 
 import gi
+
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Gio, Adw
 
+from animegui.controllers.controller_app import AppController
 from animegui.ui import AniMeGUIAppWindow
 from animegui.utils.gi_helpers import create_action
 
@@ -40,11 +42,13 @@ class AniMeGUIApplication(Adw.Application):
         create_action(self, "quit", self.on_quit_action, ["<primary>q"])
 
     def do_activate(self):
-        win = self.props.active_window
-        if not win:
-            win = AniMeGUIAppWindow(application=self)
+        app_window = self.props.active_window
+        if not app_window:
+            app_window = AniMeGUIAppWindow(application=self)
+            app_controller = AppController.instance()
+            app_controller.set_view(app_window)
             self.set_accels_for_action("win.show-help-overlay", ["<primary>question"])
-        win.present()
+        app_window.present()
 
     def on_preferences_action(self, action: Gio.SimpleAction, param):
         print("app.preferences action activated")

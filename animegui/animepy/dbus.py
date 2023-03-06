@@ -7,10 +7,19 @@ class AniMeDBus:
     DBUS_NAME = "org.asuslinux.Daemon"
     OBJECT_PATH = "/org/asuslinux/Anime"
 
-    def __init__(self):
-        self.proxy: Gio.DBusProxy = None
+    __instance = None
 
-        Gio.DBusProxy.new_for_bus(
+    @staticmethod
+    def instance():
+        if not AniMeDBus.__instance:
+            AniMeDBus.__instance = AniMeDBus()
+        return AniMeDBus.__instance
+
+    def __init__(self):
+        if AniMeDBus.__instance:
+            raise Exception("An instance of this class already exists. Use AniMeDBus.instance() to get it.")
+
+        self.proxy: Gio.DBusProxy = Gio.DBusProxy.new_for_bus_sync(
             Gio.BusType.SYSTEM,
             Gio.DBusProxyFlags.NONE,
             None,
@@ -18,35 +27,29 @@ class AniMeDBus:
             self.OBJECT_PATH,
             self.DBUS_NAME,
             None,
-            self.__on_proxy_ready,
-            None
         )
 
     def RunMainLoop(self, start: bool):
-        self.__call("RunMainLoop", start)
+        self._call("RunMainLoop", start)
 
     def SetBootOnOff(self, on: bool):
-        self.__call("SetBootOnOff", on)
+        self._call("SetBootOnOff", on)
 
     def SetBrightness(self, brightness: float):
-        self.__call("SetBrightness", brightness)
+        self._call("SetBrightness", brightness)
 
     def SetOnOff(self, status: bool):
-        self.__call("SetOnOff", status)
-
-    # def Write(self, data: object):
-    #     pass
+        self._call("SetOnOff", status)
 
     def AwakeEnabled(self):
-        return self.proxy.get_cached_property("AwakeEnabled")
+        result = self.proxy.get_cached_property("AwakeEnabled")
+        return bool(result)
 
     def BootEnabled(self):
-        return self.proxy.get_cached_property("BootEnabled")
+        result = self.proxy.get_cached_property("BootEnabled")
+        return bool(result)
 
-    def __on_proxy_ready(self, source: Gio.DBusProxy, result: Gio.Task, data):
-        self.proxy: Gio.DBusProxy = Gio.DBusProxy.new_for_bus_finish(result)
-
-    def __call(self, name, *args):
+    def _call(self, name, *args):
         variant_args = tuple(get_variant(p) for p in args)
         parameters = GLib.Variant.new_tuple(*variant_args) if args else None
 

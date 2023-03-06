@@ -23,6 +23,8 @@ animegui_sources = [
 ]
 
 install_subdir('animepy', install_dir: moduledir)
+install_subdir('controllers', install_dir: moduledir)
 install_subdir('ui', install_dir: moduledir)
 install_subdir('utils', install_dir: moduledir)
+install_subdir('widgets', install_dir: moduledir)
 install_data(animegui_sources, install_dir: moduledir)
