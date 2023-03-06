@@ -19,8 +19,7 @@ class AniMeDBus:
         if AniMeDBus.__instance:
             raise Exception("An instance of this class already exists. Use AniMeDBus.instance() to get it.")
 
-        self.proxy: Gio.DBusProxy = None
-        Gio.DBusProxy.new_for_bus(
+        self.proxy: Gio.DBusProxy = Gio.DBusProxy.new_for_bus_sync(
             Gio.BusType.SYSTEM,
             Gio.DBusProxyFlags.NONE,
             None,
@@ -28,8 +27,6 @@ class AniMeDBus:
             self.OBJECT_PATH,
             self.DBUS_NAME,
             None,
-            self.__on_proxy_ready,
-            None
         )
 
     def RunMainLoop(self, start: bool):
@@ -45,10 +42,12 @@ class AniMeDBus:
         self._call("SetOnOff", status)
 
     def AwakeEnabled(self):
-        return self.proxy.get_cached_property("AwakeEnabled")
+        result = self.proxy.get_cached_property("AwakeEnabled")
+        return bool(result)
 
     def BootEnabled(self):
-        return self.proxy.get_cached_property("BootEnabled")
+        result = self.proxy.get_cached_property("BootEnabled")
+        return bool(result)
 
     def _call(self, name, *args):
         variant_args = tuple(get_variant(p) for p in args)
@@ -67,9 +66,6 @@ class AniMeDBus:
 
         except Exception as err:
             print(err)
-
-    def __on_proxy_ready(self, source: Gio.DBusProxy, result: Gio.Task, data):
-        self.proxy: Gio.DBusProxy = Gio.DBusProxy.new_for_bus_finish(result)
 
     def __on_call_finished(self, source: Gio.DBusProxy, result: Gio.Task, data):
         pass

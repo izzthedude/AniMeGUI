@@ -24,7 +24,7 @@ class AniMeCLI:
 
         self._data: AniMeData = AniMeData()
         self._runner: Popen | None = None
-        self.__initial_command = ["flatpak-spawn", "--host", "test", "asusctl", "anime"]
+        self.__initial_command = ["flatpak-spawn", "--host", "asusctl", "anime"]
 
     def run(self):
         """
@@ -57,8 +57,9 @@ class AniMeCLI:
         int
             The return code of the clear command.
         """
-        command = self.__initial_command[0:-1] + ["--clear"]
-        return subprocess.run(command).returncode
+        if not self._runner or not self.is_running():
+            command = self.__initial_command + ["--clear"]
+            return subprocess.run(command, stdout=subprocess.DEVNULL).returncode
 
     def is_running(self) -> bool:
         """
@@ -133,7 +134,7 @@ class AniMeCLI:
 
         for key, value in self._data:
             key = key.replace("_", "-")
-            if "image" in self.__initial_command and key == "loops":
+            if "image" in args and key == "loops":
                 continue
 
             args.append(f"--{key}")

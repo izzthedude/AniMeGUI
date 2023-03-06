@@ -1,6 +1,6 @@
-import os
+from gi.repository import Adw, Gtk, GObject
 
-from gi.repository import Adw, Gtk
+from animegui.utils.gi_helpers import create_signal
 
 
 class BaseActionRow(Adw.ActionRow):
@@ -80,7 +80,7 @@ class ButtonActionRow(BaseActionRow):
         self.box.append(self.label)
         self.box.append(self.button)
 
-        super().__init__(parent_group, title, subtitle, self.box, None, **kwargs)
+        super().__init__(parent_group, title, subtitle, self.box, self.button, **kwargs)
 
 
 class SpinButtonActionRow(BaseActionRow):
@@ -129,25 +129,56 @@ class NameParameter(EntryActionRow):
 
 
 class ImagePathParameter(ButtonActionRow):
-    def __init__(
-            self,
-            parent_group: Adw.PreferencesGroup | Adw.ExpanderRow,
-            **kwargs,
-    ):
+    FILE_SELECTED = "gummy-calcium"
+
+    def __init__(self, parent_group: Adw.PreferencesGroup | Adw.ExpanderRow, **kwargs):
         super().__init__(
             parent_group,
             "Image/GIF Path",
             "Path to the image or GIF file that will be displayed",
             **kwargs
         )
-        self.button.set_icon_name("folder-symbolic")
+        if not GObject.signal_list_names(self):
+            create_signal(self, self.FILE_SELECTED, [str])
 
+        self.button.set_icon_name("folder-symbolic")
+        self.button.connect("clicked", self._on_button_clicked)
         self.path: str = ""
 
-    def set_path(self, path: str):
-        self.path = path
-        file_name = os.path.basename(path)
-        self.label.set_label(file_name)
+    def get_path(self):
+        return self.path
+
+    def set_filename(self, name: str):
+        self.label.set_label(name)
+
+    def _on_button_clicked(self, button: Gtk.Button):
+        self._dialog = Gtk.FileChooserNative(
+            title="Choose PNG image or GIF",
+            action=Gtk.FileChooserAction.OPEN,
+        )
+
+        png_filter = Gtk.FileFilter()
+        png_filter.set_name("PNG")
+        png_filter.add_mime_type("image/png")
+        gif_filter = Gtk.FileFilter()
+        gif_filter.set_name("GIF")
+        gif_filter.add_mime_type("image/gif")
+        self._dialog.add_filter(png_filter)
+        self._dialog.add_filter(gif_filter)
+
+        self._dialog.connect("response", self._on_file_chooser_response)
+        self._dialog.show()
+
+    def _on_file_chooser_response(self, dialog: Gtk.FileChooserNative, response: int):
+        if response == Gtk.ResponseType.ACCEPT:
+            self.path = dialog.get_file().get_path()
+            self.emit(self.FILE_SELECTED, self.path)
+
+            file_name: str = dialog.get_file().get_basename()
+            self.set_filename(file_name)
+
+        dialog.destroy()
+        del self._dialog
 
 
 class ScaleParameter(SpinButtonActionRow):
@@ -269,7 +300,7 @@ class PresetExpanderRow(Adw.ExpanderRow):
 
         # Set values
         self.name_row.entry.set_text(name)
-        self.file_row.set_path(file)
+        self.file_row.set_filename(file)
         self.scale_row.spin_button.set_value(scale)
         self.offset_x_row.spin_button.set_value(x_pos)
         self.offset_y_row.spin_button.set_value(y_pos)

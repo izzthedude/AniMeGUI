@@ -31,6 +31,9 @@ class AniMeGUIAppWindow(Adw.ApplicationWindow):
 
     header_bar: Adw.HeaderBar = Gtk.Template.Child()
     header_title_box: Gtk.Box = Gtk.Template.Child()
+    stop_btn: Gtk.Button = Gtk.Template.Child()
+    start_btn: Gtk.Button = Gtk.Template.Child()
+    clear_btn: Gtk.Button = Gtk.Template.Child()
 
     switcher_title: Adw.ViewSwitcherTitle = Gtk.Template.Child()
     content_stack: Adw.ViewStack = Gtk.Template.Child()
@@ -46,6 +49,7 @@ class AniMeGUIAppWindow(Adw.ApplicationWindow):
 
     def _add_views(self, *args: BasePageView):
         for view in args:
+            view.set_parent_window(self)
             name, title, icon = view._define_stackpage()
             self.content_stack.add_titled_with_icon(view, name, title, icon)
 

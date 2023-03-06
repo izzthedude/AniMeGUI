@@ -1,4 +1,4 @@
-from gi.repository import Gtk
+from gi.repository import Gtk, Adw
 
 
 class BasePageView(Gtk.ScrolledWindow):
@@ -6,6 +6,7 @@ class BasePageView(Gtk.ScrolledWindow):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.parent_window: Adw.ApplicationWindow = None
         self.content_box: Gtk.Box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
             margin_top=30,
@@ -35,6 +36,12 @@ class BasePageView(Gtk.ScrolledWindow):
             A widget that will be added to the page's content box.
         """
         self.content_box.append(widget)
+
+    def get_parent_window(self):
+        return self.parent_window
+
+    def set_parent_window(self, window: Adw.ApplicationWindow):
+        self.parent_window = window
 
     def _define_stackpage(self) -> tuple[str, str, str]:
         """

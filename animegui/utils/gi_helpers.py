@@ -1,4 +1,4 @@
-from gi.repository import Gio, GLib, Gtk
+from gi.repository import Gio, GLib, Gtk, GObject
 
 
 def create_action(self: Gtk.Application | Gtk.ApplicationWindow, name: str, callback, shortcuts: list = None):
@@ -14,6 +14,16 @@ def create_action(self: Gtk.Application | Gtk.ApplicationWindow, name: str, call
             origin = "win"
 
         app.set_accels_for_action(f"{origin}.{name}", shortcuts)
+
+
+def create_signal(source: GObject.Object, name: str, param_types: list = []):
+    GObject.signal_new(
+        name,  # Signal message
+        source,  # A Python GObject instance or type that the signal is associated with
+        GObject.SignalFlags.RUN_LAST,  # Signal flags
+        GObject.TYPE_BOOLEAN,  # Return type of the signal handler
+        param_types  # Parameter types
+    )
 
 
 def get_variant(value):
