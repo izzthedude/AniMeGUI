@@ -38,14 +38,15 @@ class AniMeGUIAppWindow(Adw.ApplicationWindow):
     switcher_title: Adw.ViewSwitcherTitle = Gtk.Template.Child()
     content_stack: Adw.ViewStack = Gtk.Template.Child()
 
-    general_view: GeneralPageView = GeneralPageView()
-    presets_view: PresetsPageView = PresetsPageView()
-    live_view: LivePageView = LivePageView()
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._setup_help_overlay()
+
+        self.general_view = GeneralPageView()
+        self.presets_view = PresetsPageView()
+        self.live_view = LivePageView()
         self._add_views(self.general_view, self.presets_view, self.live_view)
+
         self.general_view.file_chooser_row.set_transient_for(self)
 
     def _add_views(self, *args: BasePageView):

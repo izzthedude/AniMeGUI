@@ -1,3 +1,5 @@
+import os
+
 from gi.repository import Adw, Gtk, GObject
 
 from animegui.utils.gi_helpers import create_signal
@@ -149,8 +151,9 @@ class ImagePathParameter(ButtonActionRow):
     def get_path(self):
         return self.path
 
-    def set_filename(self, name: str):
-        self.label.set_label(name)
+    def set_path(self, path: str):
+        self.label.set_label(os.path.basename(path))
+        self.label.set_tooltip_text(path)
 
     def set_transient_for(self, window: Adw.ApplicationWindow):
         self.parent_window = window
@@ -179,10 +182,8 @@ class ImagePathParameter(ButtonActionRow):
     def _on_file_chooser_response(self, dialog: Gtk.FileChooserNative, response: int):
         if response == Gtk.ResponseType.ACCEPT:
             self.path = dialog.get_file().get_path()
+            self.set_path(self.path)
             self.emit(self.FILE_SELECTED, self.path)
-
-            file_name: str = dialog.get_file().get_basename()
-            self.set_filename(file_name)
 
         dialog.destroy()
         del self._dialog
@@ -283,12 +284,12 @@ class PresetExpanderRow(Adw.ExpanderRow):
             self,
             parent_group: Adw.PreferencesGroup,
             name: str,
-            file: str,
+            path: str,
             scale: float,
             x_pos: float,
             y_pos: float,
             angle: int,
-            brightness: float,
+            bright: float,
             loops: int,
             **kwargs):
         super().__init__(**kwargs)
@@ -297,7 +298,7 @@ class PresetExpanderRow(Adw.ExpanderRow):
 
         # Initialise rows
         self.name_row: NameParameter = NameParameter(self)
-        self.file_row: ImagePathParameter = ImagePathParameter(self)
+        self.path_row: ImagePathParameter = ImagePathParameter(self)
         self.scale_row: ScaleParameter = ScaleParameter(self)
         self.offset_x_row: XOffsetParameter = XOffsetParameter(self)
         self.offset_y_row: YOffsetParameter = YOffsetParameter(self)
@@ -307,12 +308,12 @@ class PresetExpanderRow(Adw.ExpanderRow):
 
         # Set values
         self.name_row.entry.set_text(name)
-        self.file_row.set_filename(file)
+        self.path_row.set_path(path)
         self.scale_row.spin_button.set_value(scale)
         self.offset_x_row.spin_button.set_value(x_pos)
         self.offset_y_row.spin_button.set_value(y_pos)
         self.angle_row.scale.set_value(angle)
-        self.brightness_row.scale.set_value(brightness)
+        self.brightness_row.scale.set_value(bright)
         self.loops_row.spin_button.set_value(loops)
 
         parent_group.add(self)

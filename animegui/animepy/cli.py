@@ -141,6 +141,3 @@ class AniMeCLI:
             args.append(f"{value}")
 
         return args
-
-
-AniMeCLI.instance()

@@ -69,6 +69,3 @@ class AniMeDBus:
 
     def __on_call_finished(self, source: Gio.DBusProxy, result: Gio.Task, data):
         pass
-
-
-AniMeDBus.instance()

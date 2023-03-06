@@ -45,7 +45,7 @@ class AniMeGUIApplication(Adw.Application):
         app_window = self.props.active_window
         if not app_window:
             app_window = AniMeGUIAppWindow(application=self)
-            app_controller = AppController().instance()
+            app_controller = AppController.instance()
             app_controller.set_view(app_window)
             self.set_accels_for_action("win.show-help-overlay", ["<primary>question"])
         app_window.present()
