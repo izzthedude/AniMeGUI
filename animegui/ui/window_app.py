@@ -46,6 +46,7 @@ class AniMeGUIAppWindow(Adw.ApplicationWindow):
         super().__init__(**kwargs)
         self._setup_help_overlay()
         self._add_views(self.general_view, self.presets_view, self.live_view)
+        self.general_view.file_chooser_row.set_transient_for(self)
 
     def _add_views(self, *args: BasePageView):
         for view in args:

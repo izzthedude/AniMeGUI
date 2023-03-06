@@ -141,6 +141,7 @@ class ImagePathParameter(ButtonActionRow):
         if not GObject.signal_list_names(self):
             create_signal(self, self.FILE_SELECTED, [str])
 
+        self.parent_window = None
         self.button.set_icon_name("folder-symbolic")
         self.button.connect("clicked", self._on_button_clicked)
         self.path: str = ""
@@ -151,11 +152,17 @@ class ImagePathParameter(ButtonActionRow):
     def set_filename(self, name: str):
         self.label.set_label(name)
 
+    def set_transient_for(self, window: Adw.ApplicationWindow):
+        self.parent_window = window
+
     def _on_button_clicked(self, button: Gtk.Button):
-        self._dialog = Gtk.FileChooserNative(
+        self._dialog = Gtk.FileChooserDialog(
             title="Choose PNG image or GIF",
+            transient_for=self.parent_window,
             action=Gtk.FileChooserAction.OPEN,
         )
+        self._dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL)
+        self._dialog.add_button("_Select", Gtk.ResponseType.ACCEPT)
 
         png_filter = Gtk.FileFilter()
         png_filter.set_name("PNG")
