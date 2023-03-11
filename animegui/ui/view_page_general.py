@@ -50,9 +50,6 @@ class GeneralPageView(BasePageView):
 
         self.presets_dropdown: Gtk.DropDown = Gtk.DropDown()
         self.presets_dropdown_model: Gtk.StringList = Gtk.StringList()
-        self.presets_dropdown_model.append("Load Preset")
-        for i in range(3):  # Temporary list
-            self.presets_dropdown_model.append(f"Debug {i + 1}")
         self.presets_dropdown.set_model(self.presets_dropdown_model)
 
         self.parameters_group.set_header_suffix(self.presets_dropdown)

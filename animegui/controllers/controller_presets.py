@@ -8,8 +8,15 @@ from animegui.widgets.rows import *
 class PresetsController(BaseController):
     __gtype_name__ = "PresetsController"
 
+    PRESETS_LOADED = "unclad-radiator"
+    PRESETS_CHANGED = "jacket-grafting"
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        if not GObject.signal_list_names(self):
+            create_signal(self, self.PRESETS_LOADED, [object])  # Emits list[PresetData]
+            create_signal(self, self.PRESETS_CHANGED, [object])  # Emits PresetData
+
         self._view: PresetsPageView
         self._presets: list[tuple[PresetData, PresetExpanderRow]] = []
 
@@ -27,12 +34,23 @@ class PresetsController(BaseController):
         self._connect_preset_to_row(preset, row)
         self._presets.append((preset, row))
         self._view.add_preset_row(row)
+        self.emit(self.PRESETS_CHANGED, self.get_presets())
 
     def remove_preset(self, preset: PresetData):
         index = self._find_preset(preset)
         pair = self._presets[index]
         self._view.remove_preset_row(pair[1])
         self._presets.remove(pair)
+        self.emit(self.PRESETS_CHANGED, self.get_presets())
+
+    def get_presets(self) -> list[PresetData]:
+        presets = [preset for preset, row in self._presets]
+        return presets
+
+    def get_preset(self, name: str):
+        for preset, row in self._presets:
+            if preset.name == name:
+                return preset
 
     def commit_presets(self):
         presets = [preset for preset, row in self._presets]
@@ -41,6 +59,7 @@ class PresetsController(BaseController):
     def _load_presets_finish(self, presets: list[PresetData]):
         for preset in presets:
             self.add_preset(preset)
+        self.emit(self.PRESETS_LOADED, [preset for preset, row in self._presets])
 
     def _on_add_button_clicked(self, button: Gtk.Button):
         preset = PresetData.placeholder()
@@ -72,6 +91,7 @@ class PresetsController(BaseController):
     def _on_name_changed(self, entry: Gtk.Entry, preset: PresetData):
         name = entry.get_text()
         preset.name = name
+        self.emit(self.PRESETS_CHANGED, self.get_presets())  # Jank solution
 
     def _on_path_changed(self, row: ImagePathParameter, path: str, preset: PresetData):
         preset.anime.path = path

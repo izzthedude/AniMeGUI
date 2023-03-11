@@ -150,8 +150,10 @@ class ImagePathParameter(ButtonActionRow):
         return self.path
 
     def set_path(self, path: str):
+        self.path = path
         self.label.set_label(os.path.basename(path))
         self.label.set_tooltip_text(path)
+        self.emit(self.FILE_SELECTED, self.path)
 
     def set_transient_for(self, window: Adw.ApplicationWindow):
         self.parent_window = window
