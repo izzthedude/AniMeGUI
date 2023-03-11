@@ -20,6 +20,8 @@ configure_file(
 animegui_sources = [
   '__init__.py',
   'app.py',
+  'enums.py',
+  'presets.py'
 ]
 
 install_subdir('animepy', install_dir: moduledir)

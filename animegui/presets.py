@@ -15,6 +15,46 @@ class PresetData(BaseData):
     def placeholder():
         return PresetData("Placeholder", AniMeData())
 
+    @staticmethod
+    def convert_from_dict(data: dict):
+        """
+        Converts a dictionary into a PresetData.
+
+        Parameters
+        ----------
+        data: dict
+            A dictionary of preset data
+
+        Returns
+        -------
+        PresetData
+            A PresetData with values taken from the given dictionary
+        """
+        name, *anime = data.items()
+        name = dict([name])
+        anime = dict(anime)
+        preset_dict = {
+            **name,
+            "anime": AniMeData(**anime)
+        }
+        preset = PresetData(**preset_dict)
+        return preset
+
+    def convert_to_dict(self) -> dict:
+        """
+        Converts Preset data into a dictionary, where the AniMeData is expanded.
+        E.g: {"name": "Name", "path": "/path/", "scale": 1.0, ...,}
+
+        Returns
+        -------
+        dict
+            A dictionary of the expanded PresetData
+        """
+        data = {"name": self.name}
+        for key, value in self.anime:
+            data[key] = value
+        return data
+
 
 def load_presets() -> list[PresetData]:
     """
@@ -32,7 +72,7 @@ def load_presets() -> list[PresetData]:
 
     with open(Paths.USER_PRESETS, "r") as file:
         json_data = json.load(file)  # Expected to be list[dict]
-        presets = [convert_from_dict(data) for data in json_data]
+        presets = [PresetData.convert_from_dict(data) for data in json_data]
         return presets
 
 
@@ -45,47 +85,6 @@ def commit_presets(presets: list[PresetData]):
     presets: list[PresetData]
         A list of PresetData
     """
-    data = [convert_to_dict(preset) for preset in presets]
+    data = [preset.convert_to_dict() for preset in presets]
     with open(Paths.USER_PRESETS, "w") as file:
         json.dump(data, file)
-
-
-def convert_to_dict(preset: PresetData) -> dict:
-    """
-    Converts Preset data into a dictionary, where the AniMeData is expanded.
-    E.g: {"name": "Name", "path": "/path/", "scale": 1.0, ...,}
-
-    Returns
-    -------
-    dict
-        A dictionary of the expanded PresetData
-    """
-    data = {"name": preset.name}
-    for key, value in preset.anime:
-        data[key] = value
-    return data
-
-
-def convert_from_dict(data: dict) -> PresetData:
-    """
-    Converts a dictionary into a PresetData.
-
-    Parameters
-    ----------
-    data: dict
-        A dictionary of preset data
-
-    Returns
-    -------
-    PresetData
-        A PresetData with values taken from the given dictionary
-    """
-    name, *anime = data.items()
-    name = dict([name])
-    anime = dict(anime)
-    preset_dict = {
-        **name,
-        "anime": AniMeData(**anime)
-    }
-    preset = PresetData(**preset_dict)
-    return preset

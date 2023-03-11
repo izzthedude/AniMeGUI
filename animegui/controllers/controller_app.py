@@ -3,6 +3,7 @@ from gi.repository import Gio, GObject
 from animegui.animepy.cli import AniMeCLI
 from animegui.controllers.controller_base import BaseController
 from animegui.controllers.controller_general import GeneralController
+from animegui.controllers.controller_presets import PresetsController
 from animegui.ui.window_app import AniMeGUIAppWindow
 from animegui.utils.gi_helpers import create_action
 
@@ -17,6 +18,7 @@ class AppController(BaseController):
         # The 'view' for the AppController is AniMeGUIAppWindow, set in app.py
         self._view: AniMeGUIAppWindow
         self._general_controller: GeneralController = GeneralController.instance()
+        self._presets_controller: PresetsController = PresetsController.instance()
 
     def set_view(self, view: AniMeGUIAppWindow):
         self._view = view
@@ -33,6 +35,10 @@ class AppController(BaseController):
         )
 
         self._general_controller.set_view(self._view.general_view)
+        self._presets_controller.set_view(self._view.presets_view)
+
+    def on_shutdown(self):
+        self._presets_controller.commit_presets()
 
     def _on_stop_anime(self, action: Gio.SimpleAction, params):
         self._cli.terminate()
