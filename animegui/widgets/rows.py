@@ -96,8 +96,6 @@ class SpinButtonActionRow(BaseActionRow):
 
         self.spin_button: Gtk.SpinButton = Gtk.SpinButton()
         self.spin_button.set_digits(1)
-        self.spin_button.set_range(0.1, 20.0)
-        self.spin_button.set_increments(0.1, 0.1)
 
         self.box.append(self.spin_button)
 
@@ -198,6 +196,8 @@ class ScaleParameter(SpinButtonActionRow):
             "Scale of the image or GIF",
             **kwargs
         )
+        self.spin_button.set_range(0.0, 10.0)
+        self.spin_button.set_increments(0.5, 0.5)
 
 
 class XOffsetParameter(SpinButtonActionRow):
@@ -212,6 +212,8 @@ class XOffsetParameter(SpinButtonActionRow):
             "The offset of the image in the x-axis",
             **kwargs
         )
+        self.spin_button.set_range(-50.0, 50.0)
+        self.spin_button.set_increments(1, 1)
 
 
 class YOffsetParameter(SpinButtonActionRow):
@@ -226,6 +228,8 @@ class YOffsetParameter(SpinButtonActionRow):
             "The offset of the image in the y-axis",
             **kwargs
         )
+        self.spin_button.set_range(-50.0, 50.0)
+        self.spin_button.set_increments(1, 1)
 
 
 class AngleParameter(ScaleActionRow):

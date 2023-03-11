@@ -85,6 +85,7 @@ class GeneralPageView(BasePageView):
         # Initialise Loops row
         self.loops_row: LoopsParameter = LoopsParameter(self.parameters_group)
         self.loops_button: Gtk.SpinButton = self.loops_row.spin_button
+        self.loops_row.set_visible(False)
 
     def _define_stackpage(self) -> tuple[str, str, str]:
         return "general_page-view", "General", "tv-symbolic"

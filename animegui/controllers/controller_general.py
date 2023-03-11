@@ -1,4 +1,5 @@
 import math
+import os
 
 from gi.repository import Gtk
 
@@ -104,6 +105,12 @@ class GeneralController(BaseController):
 
     def _on_file_chooser_selected(self, row, path: str):
         self._data.path = path
+
+        suffix = os.path.basename(path).split(".")[-1]
+        visible = False
+        if suffix == "gif":
+            visible = True
+        self._view.loops_row.set_visible(visible)
 
     def _on_image_scale_changed(self, spin_button: Gtk.SpinButton):
         self._data.scale = spin_button.get_value()
