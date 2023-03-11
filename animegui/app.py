@@ -37,6 +37,7 @@ class AniMeGUIApplication(Adw.Application):
             flags=Gio.ApplicationFlags.FLAGS_NONE
         )
         self.app_controller = AppController.instance()
+        self.connect("shutdown", self.on_shutdown)
 
         create_action(self, "preferences", self.on_preferences_action, ["<primary>comma"])
         create_action(self, "about", self.on_about_action)
@@ -50,7 +51,7 @@ class AniMeGUIApplication(Adw.Application):
             self.set_accels_for_action("win.show-help-overlay", ["<primary>question"])
         app_window.present()
 
-    def do_shutdown(self, *args, **kwargs):
+    def on_shutdown(self, app):
         self.app_controller.on_shutdown()
 
     def on_preferences_action(self, action: Gio.SimpleAction, param):

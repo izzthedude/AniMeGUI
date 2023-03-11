@@ -149,4 +149,4 @@ class GeneralController(BaseController):
         self._data.bright = scale.get_value()
 
     def _on_loops_changed(self, spin_button: Gtk.SpinButton):
-        self._data.loops = spin_button.get_value()
+        self._data.loops = int(spin_button.get_value())
