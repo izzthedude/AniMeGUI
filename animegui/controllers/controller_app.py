@@ -1,10 +1,11 @@
 import math
 
-from gi.repository import Gio, GObject, Gtk
+from gi.repository import Gio, GObject, Gtk, Adw
 
 from animegui.animepy.cli import AniMeCLI
 from animegui.controllers.controller_base import BaseController
 from animegui.controllers.controller_general import GeneralController
+from animegui.controllers.controller_live import LiveController
 from animegui.controllers.controller_presets import PresetsController
 from animegui.presets import PresetData
 from animegui.ui.window_app import AniMeGUIAppWindow
@@ -22,6 +23,7 @@ class AppController(BaseController):
         self._view: AniMeGUIAppWindow
         self._general_controller: GeneralController = GeneralController.instance()
         self._presets_controller: PresetsController = PresetsController.instance()
+        self._live_controller: LiveController = LiveController.instance()
 
     def set_view(self, view: AniMeGUIAppWindow):
         self._view = view
@@ -37,8 +39,11 @@ class AppController(BaseController):
             GObject.BindingFlags.BIDIRECTIONAL | GObject.BindingFlags.SYNC_CREATE | GObject.BindingFlags.INVERT_BOOLEAN
         )
 
+        self._view.content_stack.connect("notify::visible-child-name", self._on_visible_page_changed)
+
         self._general_controller.set_view(self._view.general_view)
         self._presets_controller.set_view(self._view.presets_view)
+        self._live_controller.set_view(self._view.live_view)
 
         self._presets_controller.connect(self._presets_controller.PRESETS_LOADED, self._on_presets_loaded)
         self._presets_controller.connect(self._presets_controller.PRESETS_CHANGED, self._on_presets_loaded)
@@ -70,6 +75,11 @@ class AppController(BaseController):
             self._cli.terminate()
         self._cli.clear()
         self._view.start_btn.set_visible(True)
+
+    def _on_visible_page_changed(self, stack: Adw.ViewStack, _):
+        self._live_controller.is_current_view = stack.get_visible_child_name() == "live_page_view"
+        if self._live_controller.is_current_view:
+            self._live_controller.tick_frame()
 
     def _on_presets_loaded(self, controller: PresetsController, presets: list[PresetData]):
         self._view.general_view.presets_dropdown.freeze_notify()

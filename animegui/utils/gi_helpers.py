@@ -1,4 +1,5 @@
-from gi.repository import Gio, GLib, Gtk, GObject
+import cairo as cr
+from gi.repository import Gio, GLib, Gtk, GObject, Gdk
 
 
 def create_action(self: Gtk.Application | Gtk.ApplicationWindow, name: str, callback, shortcuts: list = None):
@@ -24,6 +25,23 @@ def create_signal(source: GObject.Object, name: str, param_types: list = []):
         GObject.TYPE_BOOLEAN,  # Return type of the signal handler
         param_types  # Parameter types
     )
+
+
+def create_rect(width: int, height: int, x: int, y: int):
+    rect = Gdk.Rectangle()
+    rect.width = width
+    rect.height = height
+    rect.x = x
+    rect.y = y
+    return rect
+
+
+def fill_rect(context: cr.Context, width: int, height: int, x: int, y: int, color: str):
+    rgba = Gdk.RGBA()
+    rgba.parse(color)
+    context.set_source_rgba(rgba.red, rgba.green, rgba.blue, rgba.alpha)
+    context.rectangle(x, y, width, height)
+    context.fill()
 
 
 def get_variant(value):
