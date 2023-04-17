@@ -96,8 +96,6 @@ class SpinButtonActionRow(BaseActionRow):
 
         self.spin_button: Gtk.SpinButton = Gtk.SpinButton()
         self.spin_button.set_digits(1)
-        self.spin_button.set_range(0.1, 20.0)
-        self.spin_button.set_increments(0.1, 0.1)
 
         self.box.append(self.spin_button)
 
@@ -152,8 +150,10 @@ class ImagePathParameter(ButtonActionRow):
         return self.path
 
     def set_path(self, path: str):
+        self.path = path
         self.label.set_label(os.path.basename(path))
         self.label.set_tooltip_text(path)
+        self.emit(self.FILE_SELECTED, self.path)
 
     def set_transient_for(self, window: Adw.ApplicationWindow):
         self.parent_window = window
@@ -167,14 +167,11 @@ class ImagePathParameter(ButtonActionRow):
         self._dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL)
         self._dialog.add_button("_Select", Gtk.ResponseType.ACCEPT)
 
-        png_filter = Gtk.FileFilter()
-        png_filter.set_name("PNG")
-        png_filter.add_mime_type("image/png")
-        gif_filter = Gtk.FileFilter()
-        gif_filter.set_name("GIF")
-        gif_filter.add_mime_type("image/gif")
-        self._dialog.add_filter(png_filter)
-        self._dialog.add_filter(gif_filter)
+        filter = Gtk.FileFilter()
+        filter.set_name("PNG/GIF")
+        filter.add_mime_type("image/png")
+        filter.add_mime_type("image/gif")
+        self._dialog.add_filter(filter)
 
         self._dialog.connect("response", self._on_file_chooser_response)
         self._dialog.show()
@@ -201,6 +198,8 @@ class ScaleParameter(SpinButtonActionRow):
             "Scale of the image or GIF",
             **kwargs
         )
+        self.spin_button.set_range(0.0, 10.0)
+        self.spin_button.set_increments(0.5, 0.5)
 
 
 class XOffsetParameter(SpinButtonActionRow):
@@ -215,6 +214,8 @@ class XOffsetParameter(SpinButtonActionRow):
             "The offset of the image in the x-axis",
             **kwargs
         )
+        self.spin_button.set_range(-50.0, 50.0)
+        self.spin_button.set_increments(1, 1)
 
 
 class YOffsetParameter(SpinButtonActionRow):
@@ -229,6 +230,8 @@ class YOffsetParameter(SpinButtonActionRow):
             "The offset of the image in the y-axis",
             **kwargs
         )
+        self.spin_button.set_range(-50.0, 50.0)
+        self.spin_button.set_increments(1, 1)
 
 
 class AngleParameter(ScaleActionRow):
@@ -282,7 +285,6 @@ class LoopsParameter(SpinButtonActionRow):
 class PresetExpanderRow(Adw.ExpanderRow):
     def __init__(
             self,
-            parent_group: Adw.PreferencesGroup,
             name: str,
             path: str,
             scale: float,
@@ -306,6 +308,10 @@ class PresetExpanderRow(Adw.ExpanderRow):
         self.brightness_row: BrightnessParameter = BrightnessParameter(self)
         self.loops_row: LoopsParameter = LoopsParameter(self)
 
+        self.delete_button: Gtk.Button = Gtk.Button(valign=Gtk.Align.CENTER)
+        self.delete_button.set_icon_name("user-trash-symbolic")
+        self.add_action(self.delete_button)
+
         # Set values
         self.name_row.entry.set_text(name)
         self.path_row.set_path(path)
@@ -316,4 +322,9 @@ class PresetExpanderRow(Adw.ExpanderRow):
         self.brightness_row.scale.set_value(bright)
         self.loops_row.spin_button.set_value(loops)
 
-        parent_group.add(self)
+        self.bind_property(
+            "title",
+            self.name_row.entry,
+            "text",
+            GObject.BindingFlags.BIDIRECTIONAL | GObject.BindingFlags.SYNC_CREATE
+        )

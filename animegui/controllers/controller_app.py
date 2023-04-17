@@ -1,8 +1,12 @@
-from gi.repository import Gio, GObject
+import math
+
+from gi.repository import Gio, GObject, Gtk
 
 from animegui.animepy.cli import AniMeCLI
 from animegui.controllers.controller_base import BaseController
 from animegui.controllers.controller_general import GeneralController
+from animegui.controllers.controller_presets import PresetsController
+from animegui.presets import PresetData
 from animegui.ui.window_app import AniMeGUIAppWindow
 from animegui.utils.gi_helpers import create_action
 
@@ -17,6 +21,7 @@ class AppController(BaseController):
         # The 'view' for the AppController is AniMeGUIAppWindow, set in app.py
         self._view: AniMeGUIAppWindow
         self._general_controller: GeneralController = GeneralController.instance()
+        self._presets_controller: PresetsController = PresetsController.instance()
 
     def set_view(self, view: AniMeGUIAppWindow):
         self._view = view
@@ -33,6 +38,18 @@ class AppController(BaseController):
         )
 
         self._general_controller.set_view(self._view.general_view)
+        self._presets_controller.set_view(self._view.presets_view)
+
+        self._presets_controller.connect(self._presets_controller.PRESETS_LOADED, self._on_presets_loaded)
+        self._presets_controller.connect(self._presets_controller.PRESETS_CHANGED, self._on_presets_loaded)
+        # TODO: Janky solution, try to use the 'activate' signal when it actually works
+
+        self._view.general_view.presets_dropdown_model.append("Load Preset")
+        self._view.general_view.presets_dropdown.connect("notify::selected-item", self._on_dropdown_selected)
+        # self._view.general_view.presets_dropdown.connect("activate", self._on_presets_loaded)
+
+    def on_shutdown(self):
+        self._presets_controller.commit_presets()
 
     def _on_stop_anime(self, action: Gio.SimpleAction, params):
         self._cli.terminate()
@@ -40,6 +57,8 @@ class AppController(BaseController):
 
     def _on_start_anime(self, action: Gio.SimpleAction, params):
         data = self._general_controller.get_data()
+        data.angle = math.radians(data.angle)  # Convert from degrees to radians
+
         for key, value in data:
             self._cli.set_arg(key, value)
 
@@ -51,3 +70,15 @@ class AppController(BaseController):
             self._cli.terminate()
         self._cli.clear()
         self._view.start_btn.set_visible(True)
+
+    def _on_presets_loaded(self, controller: PresetsController, presets: list[PresetData]):
+        self._view.general_view.presets_dropdown.freeze_notify()
+        self._general_controller.clear_preset_selector()
+        self._general_controller.update_preset_selector(presets)
+        self._view.general_view.presets_dropdown.thaw_notify()
+
+    def _on_dropdown_selected(self, dropdown: Gtk.DropDown, _):
+        value: str = dropdown.get_selected_item().get_string()
+        if value != "Load Preset":
+            preset = self._presets_controller.get_preset(value)
+            self._general_controller.load_preset(preset)

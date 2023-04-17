@@ -1,5 +1,7 @@
+from gi.repository import Adw, Gtk
+
 from animegui.ui.view_page_base import BasePageView
-from animegui.widgets.rows import *
+from animegui.widgets.rows import PresetExpanderRow
 
 
 class PresetsPageView(BasePageView):
@@ -7,8 +9,6 @@ class PresetsPageView(BasePageView):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # self.debug_label.set_visible(True)
-
         self._init_presets_group()
 
     def _init_presets_group(self):
@@ -22,17 +22,11 @@ class PresetsPageView(BasePageView):
         self.presets_group.set_header_suffix(self.presets_group_suffix_box)
         self.add_widget(self.presets_group)
 
-        debug_preset: PresetExpanderRow = PresetExpanderRow(
-            self.presets_group,
-            "Debug Preset",
-            "/home/user/Downloads/debug.png",
-            1.0,
-            0,
-            0,
-            0,
-            1.0,
-            10
-        )
+    def add_preset_row(self, row: PresetExpanderRow):
+        self.presets_group.add(row)
+
+    def remove_preset_row(self, row: PresetExpanderRow):
+        self.presets_group.remove(row)
 
     def _define_stackpage(self) -> tuple[str, str, str]:
         return "presets_page_view", "Presets", "open-book-symbolic"

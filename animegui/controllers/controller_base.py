@@ -13,7 +13,7 @@ class BaseController(GObject.Object):
         return cls.__instance
 
     def __init__(self, **kwargs):
-        if BaseController.__instance:
+        if self.__instance:
             raise Exception("An instance of this class already exists. Use instance() to get it.")
         super().__init__(**kwargs)
         self._view = None

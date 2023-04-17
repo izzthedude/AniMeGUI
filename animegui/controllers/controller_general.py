@@ -1,10 +1,11 @@
-import math
+import os
 
 from gi.repository import Gtk
 
 from animegui.animepy.data import AniMeData
 from animegui.animepy.dbus import AniMeDBus
 from animegui.controllers.controller_base import BaseController
+from animegui.presets import PresetData
 from animegui.ui.view_page_general import GeneralPageView
 
 
@@ -93,6 +94,26 @@ class GeneralController(BaseController):
             self._on_loops_changed
         )
 
+    def load_preset(self, preset: PresetData):
+        anime = preset.anime
+        self._view.file_chooser_row.set_path(anime.path)
+        self._view.image_scale_button.set_value(anime.scale)
+        self._view.offset_x_button.set_value(anime.x_pos)
+        self._view.offset_y_button.set_value(anime.y_pos)
+        self._view.angle_scale.set_value(anime.angle)
+        self._view.brightness_scale.set_value(anime.bright)
+        self._view.loops_button.set_value(anime.loops)
+
+    def update_preset_selector(self, presets: list[PresetData]):
+        model = self._view.presets_dropdown.get_model()
+        for preset in presets:
+            model.append(preset.name)
+
+    def clear_preset_selector(self):
+        new_model = Gtk.StringList()
+        new_model.append("Load Preset")
+        self._view.presets_dropdown.set_model(new_model)
+
     def _on_enable_anime_switch_activated(self, switch: Gtk.Switch, param):
         self._dbus.SetOnOff(switch.get_active())
 
@@ -105,6 +126,12 @@ class GeneralController(BaseController):
     def _on_file_chooser_selected(self, row, path: str):
         self._data.path = path
 
+        suffix = os.path.basename(path).split(".")[-1]
+        visible = False
+        if suffix == "gif":
+            visible = True
+        self._view.loops_row.set_visible(visible)
+
     def _on_image_scale_changed(self, spin_button: Gtk.SpinButton):
         self._data.scale = spin_button.get_value()
 
@@ -116,11 +143,10 @@ class GeneralController(BaseController):
 
     def _on_angle_changed(self, scale: Gtk.Scale):
         degrees = scale.get_value()
-        radians = math.radians(degrees)
-        self._data.angle = radians
+        self._data.angle = degrees
 
     def _on_brightness_changed(self, scale: Gtk.Scale):
         self._data.bright = scale.get_value()
 
     def _on_loops_changed(self, spin_button: Gtk.SpinButton):
-        self._data.loops = spin_button.get_value()
+        self._data.loops = int(spin_button.get_value())
