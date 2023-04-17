@@ -7,6 +7,7 @@ from animegui.controllers.controller_base import BaseController
 from animegui.controllers.controller_general import GeneralController
 from animegui.controllers.controller_live import LiveController
 from animegui.controllers.controller_presets import PresetsController
+from animegui.enums import Paths
 from animegui.presets import PresetData
 from animegui.ui.window_app import AniMeGUIAppWindow
 from animegui.utils.gi_helpers import create_action
@@ -48,6 +49,8 @@ class AppController(BaseController):
         self._presets_controller.connect(self._presets_controller.PRESETS_LOADED, self._on_presets_loaded)
         self._presets_controller.connect(self._presets_controller.PRESETS_CHANGED, self._on_presets_loaded)
         # TODO: Janky solution, try to use the 'activate' signal when it actually works
+
+        self._live_controller.connect(self._live_controller.TICK, self._on_live_mode)
 
         self._view.general_view.presets_dropdown_model.append("Load Preset")
         self._view.general_view.presets_dropdown.connect("notify::selected-item", self._on_dropdown_selected)
@@ -92,3 +95,9 @@ class AppController(BaseController):
         if value != "Load Preset":
             preset = self._presets_controller.get_preset(value)
             self._general_controller.load_preset(preset)
+
+    def _on_live_mode(self, controller: LiveController):
+        self._on_clear_anime(None, None)
+        data = self._general_controller.get_data()
+        data.path = Paths.FRAME_CACHE
+        self._on_start_anime(None, None)
