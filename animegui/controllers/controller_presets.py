@@ -1,3 +1,5 @@
+import re
+
 from animegui.controllers.controller_base import BaseController
 from animegui.presets import PresetData, load_presets, commit_presets
 from animegui.ui.view_page_presets import PresetsPageView
@@ -62,8 +64,12 @@ class PresetsController(BaseController):
         self.emit(self.PRESETS_LOADED, [preset for preset, row in self._presets])
 
     def _on_add_button_clicked(self, button: Gtk.Button):
+        # Calculate largest Preset XX number
+        preset_nums = re.findall(r"Preset (\d+)", "\n".join([preset.name for preset, _ in self._presets]))
+        new_num = max([int(num) for num in preset_nums]) + 1
+
         preset = PresetData.placeholder()
-        preset.name = f"Preset {len(self._presets) + 1}"
+        preset.name = f"Preset {new_num}"
         self.add_preset(preset)
 
     def _preset_to_row(self, preset: PresetData):
