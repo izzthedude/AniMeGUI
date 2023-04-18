@@ -19,14 +19,19 @@ class LiveController(BaseController):
             create_signal(self, self.TICK)
 
         self._view: LivePageView
-
         self.cap = cv2.VideoCapture(0)
-        self.refresh_rate: int = 10
+
         self.is_current_view: bool = False
         self.is_enabled: bool = False
+        self.refresh_rate: int = 10
 
     def set_view(self, view: LivePageView):
         self._view = view
+
+        if not self.cap.isOpened():
+            self._view.show_nocam_status()
+
+        self._view.check_camera_btn.connect("clicked", self._on_check_camera)
 
         self.is_enabled = self._view.enable_switch.get_active()
         self._view.enable_switch.connect("notify::active", self._on_enable_changed)
@@ -39,6 +44,7 @@ class LiveController(BaseController):
     def tick_frame(self):
         ret, frame = self.cap.read()
         frame: np.ndarray
+
         if ret and self._view:
             cv2.imwrite(Paths.FRAME_CACHE, frame)
             self._view.draw_area.queue_draw()
@@ -46,8 +52,20 @@ class LiveController(BaseController):
             if self.is_enabled:
                 self.emit(self.TICK)
 
-        if self.is_current_view:
-            GLib.timeout_add(1000 // self.refresh_rate, self.tick_frame)
+            if self.is_current_view:
+                GLib.timeout_add(1000 // self.refresh_rate, self.tick_frame)
+
+        elif not ret:
+            self.cap.release()
+            self._view.show_nocam_status()
+
+    def _on_check_camera(self, button: Gtk.Button):
+        self.cap = cv2.VideoCapture(0)
+
+        if self.cap.isOpened():
+            self._view.show_nocam_status(False)
+            if self.is_current_view:
+                self.tick_frame()
 
     def _on_enable_changed(self, switch: Gtk.Switch, param):
         self.is_enabled = switch.get_active()

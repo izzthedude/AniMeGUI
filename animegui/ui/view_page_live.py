@@ -14,8 +14,33 @@ class LivePageView(BasePageView):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+        self._init_nocam_status_page()
         self._init_preview_section()
         self._init_settings_section()
+
+    def show_nocam_status(self, visible: bool = True):
+        self.preview_box.set_visible(not visible)
+        self.settings_group.set_visible(not visible)
+        self.no_cam_status.set_visible(visible)
+
+    def _init_nocam_status_page(self):
+        self.no_cam_status: Adw.StatusPage = Adw.StatusPage(
+            title="No Cameras Found",
+            description="Connect a camera to use Live Mode. If a camera is already connected, try reconnecting it",
+            icon_name="camera-photo-symbolic",
+            hexpand=True,
+            vexpand=True,
+            visible=False
+        )
+        self.check_camera_btn: Gtk.Button = Gtk.Button(
+            label="Check for camera",
+            halign=Gtk.Align.CENTER,
+        )
+        self.check_camera_btn.add_css_class("suggested-action")
+        self.no_cam_status.set_child(self.check_camera_btn)
+
+        self.add_widget(self.no_cam_status)
 
     def _init_preview_section(self):
         self.preview_box: Gtk.Box = Gtk.Box(
@@ -43,7 +68,7 @@ class LivePageView(BasePageView):
         self.enable_row: SwitchActionRow = SwitchActionRow(
             self.settings_group,
             "Live Mode",
-            "Enable Live Mode. This will immediately write to AniMe as soon as it is enabled."
+            "Enable Live Mode. This will immediately write to AniMe as soon as it is enabled"
         )
         self.enable_switch: Gtk.Switch = self.enable_row.switch
 
