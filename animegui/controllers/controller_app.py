@@ -1,16 +1,15 @@
 import math
-
 from gi.repository import Gio, GObject, Gtk, Adw
 
 from animegui.animepy.cli import AniMeCLI
 from animegui.controllers.controller_base import BaseController
 from animegui.controllers.controller_general import GeneralController
-from animegui.controllers.controller_live import LiveController
 from animegui.controllers.controller_presets import PresetsController
 from animegui.enums import Paths
 from animegui.presets import PresetData
 from animegui.ui.window_app import AniMeGUIAppWindow
 from animegui.utils.gi_helpers import create_action
+from animegui.utils.task import simple_run_async
 
 
 class AppController(BaseController):
@@ -24,7 +23,9 @@ class AppController(BaseController):
         self._view: AniMeGUIAppWindow
         self._general_controller: GeneralController = GeneralController.instance()
         self._presets_controller: PresetsController = PresetsController.instance()
-        self._live_controller: LiveController = LiveController.instance()
+        simple_run_async(self._init_live_controller)
+
+        self._initial_data: dict = self._general_controller.get_data().as_dict()
 
     def set_view(self, view: AniMeGUIAppWindow):
         self._view = view
@@ -44,13 +45,10 @@ class AppController(BaseController):
 
         self._general_controller.set_view(self._view.general_view)
         self._presets_controller.set_view(self._view.presets_view)
-        self._live_controller.set_view(self._view.live_view)
 
         self._presets_controller.connect(self._presets_controller.PRESETS_LOADED, self._on_presets_loaded)
         self._presets_controller.connect(self._presets_controller.PRESETS_CHANGED, self._on_presets_loaded)
         # TODO: Janky solution, try to use the 'activate' signal when it actually works
-
-        self._live_controller.connect(self._live_controller.TICK, self._on_live_mode)
 
         self._view.general_view.presets_dropdown_model.append("Load Preset")
         self._view.general_view.presets_dropdown.connect("notify::selected-item", self._on_dropdown_selected)
@@ -58,6 +56,15 @@ class AppController(BaseController):
 
     def on_shutdown(self):
         self._presets_controller.commit_presets()
+
+    def _init_live_controller(self):
+        # When DeepFace is first imported, it does some checks in the background that takes time
+        # This method is a janky solution to ensure that it doesn't hold up the GUI while it's doing that
+        from animegui.controllers.controller_live import LiveController
+        self._live_controller: LiveController = LiveController.instance()
+        self._live_controller.set_view(self._view.live_view)
+        self._live_controller.connect(self._live_controller.TICK, self._on_live_mode)
+        self._view.add_views(self._view.live_view)
 
     def _on_stop_anime(self, action: Gio.SimpleAction, params):
         self._cli.terminate()
@@ -96,8 +103,14 @@ class AppController(BaseController):
             preset = self._presets_controller.get_preset(value)
             self._general_controller.load_preset(preset)
 
-    def _on_live_mode(self, controller: LiveController):
+    def _on_live_mode(self, controller):
         self._on_clear_anime(None, None)
         data = self._general_controller.get_data()
         data.path = Paths.FRAME_CACHE
+        if self._live_controller.current_mode == self._live_controller.EMOTIONS:
+            data.scale = 3.0
+            data.x_pos = 3.0
+        else:
+            data.scale = self._general_controller.get_view().image_scale_button.get_value()
+            data.x_pos = self._general_controller.get_view().offset_x_button.get_value()
         self._on_start_anime(None, None)

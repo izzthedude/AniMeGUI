@@ -27,16 +27,7 @@ def create_signal(source: GObject.Object, name: str, param_types: list = []):
     )
 
 
-def create_rect(width: int, height: int, x: int, y: int):
-    rect = Gdk.Rectangle()
-    rect.width = width
-    rect.height = height
-    rect.x = x
-    rect.y = y
-    return rect
-
-
-def fill_rect(context: cr.Context, width: int, height: int, x: int, y: int, color: str):
+def fill_rect(context: cr.Context, x: int, y: int, width: int, height: int, color: str = "black"):
     rgba = Gdk.RGBA()
     rgba.parse(color)
     context.set_source_rgba(rgba.red, rgba.green, rgba.blue, rgba.alpha)

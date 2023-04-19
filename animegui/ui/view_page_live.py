@@ -80,6 +80,12 @@ class LivePageView(BasePageView):
         # )
         # self.settings_group.add(self.device_chooser_row)
 
+        self.mode_chooser_row: Adw.ComboRow = Adw.ComboRow(
+            title="Mode Type",
+            subtitle="Choose Live Mode type"
+        )
+        self.settings_group.add(self.mode_chooser_row)
+
         # Refresh Rate
         self.fps_row: SpinButtonActionRow = SpinButtonActionRow(
             self.settings_group,
@@ -90,7 +96,7 @@ class LivePageView(BasePageView):
 
     def _draw_func(self, area: Gtk.DrawingArea, cairo: cr.Context, width: int, height: int):
         # Draw background
-        fill_rect(cairo, width, height, 0, 0, "black")
+        fill_rect(cairo, 0, 0, width, height, "black")
 
         # Draw current frame
         if os.path.exists(Paths.FRAME_CACHE):

@@ -45,11 +45,11 @@ class AniMeGUIAppWindow(Adw.ApplicationWindow):
         self.general_view = GeneralPageView()
         self.presets_view = PresetsPageView()
         self.live_view = LivePageView()
-        self._add_views(self.general_view, self.presets_view, self.live_view)
+        self.add_views(self.general_view, self.presets_view)
 
         self.general_view.file_chooser_row.set_transient_for(self)
 
-    def _add_views(self, *args: BasePageView):
+    def add_views(self, *args: BasePageView):
         for view in args:
             view.set_parent_window(self)
             name, title, icon = view._define_stackpage()
