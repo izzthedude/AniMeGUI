@@ -34,9 +34,6 @@ class TaskManager(GObject.Object):
 
         self._source = None
         self._cancellable = Gio.Cancellable()
-
-        if self._on_finish: self.connect(self.FINISHED, self._on_finish_wrapper)
-        if self._on_error: self.connect(self.ERROR, self._on_finish_wrapper)
         self._is_running: bool = False
 
     def start(self):
@@ -44,6 +41,9 @@ class TaskManager(GObject.Object):
         task.set_check_cancellable(True)
         task.set_return_on_cancel(True)
         task.return_error_if_cancelled()
+
+        if self._on_finish: self.connect(self.FINISHED, self._on_finish_wrapper)
+        if self._on_error: self.connect(self.ERROR, self._on_finish_wrapper)
         task.run_in_thread(self._func_wrapper)
 
     def cancel(self):

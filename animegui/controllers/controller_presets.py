@@ -66,7 +66,11 @@ class PresetsController(BaseController):
     def _on_add_button_clicked(self, button: Gtk.Button):
         # Calculate largest Preset XX number
         preset_nums = re.findall(r"Preset (\d+)", "\n".join([preset.name for preset, _ in self._presets]))
-        new_num = max([int(num) for num in preset_nums]) + 1
+
+        if preset_nums:
+            new_num = max([int(num) for num in preset_nums]) + 1
+        else:
+            new_num = 1
 
         preset = PresetData.placeholder()
         preset.name = f"Preset {new_num}"
