@@ -47,4 +47,10 @@ if compile_schemas.found()
        args: ['--strict', '--dry-run', meson.current_source_dir()])
 endif
 
+fonts = [
+  'NotoColorEmoji.ttf'
+]
+fontdir = join_paths(pkgdatadir, 'fonts')
+install_data(fonts, install_dir: pkgdatadir)
+
 subdir('icons')

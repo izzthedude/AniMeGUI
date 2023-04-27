@@ -94,9 +94,13 @@ class AppController(BaseController):
         self._view.start_btn.set_visible(True)
 
     def _on_visible_page_changed(self, stack: Adw.ViewStack, _):
-        self._live_controller.is_current_view = stack.get_visible_child_name() == "live_page_view"
-        if self._live_controller.is_current_view:
-            self._live_controller.tick_frame()
+        try:
+            self._live_controller.is_current_view = stack.get_visible_child_name() == "live_page_view"
+            if self._live_controller.is_current_view:
+                self._live_controller.tick_frame()
+
+        except AttributeError as err:
+            pass
 
     def _on_presets_loaded(self, controller: PresetsController, presets: list[PresetData]):
         self._view.general_view.presets_dropdown.freeze_notify()
