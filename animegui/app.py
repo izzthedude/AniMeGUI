@@ -39,7 +39,6 @@ class AniMeGUIApplication(Adw.Application):
         self.app_controller = AppController.instance()
         self.connect("shutdown", self.on_shutdown)
 
-        create_action(self, "preferences", self.on_preferences_action, ["<primary>comma"])
         create_action(self, "about", self.on_about_action)
         create_action(self, "quit", self.on_quit_action, ["<primary>q"])
 
@@ -53,9 +52,6 @@ class AniMeGUIApplication(Adw.Application):
 
     def on_shutdown(self, app):
         self.app_controller.on_shutdown()
-
-    def on_preferences_action(self, action: Gio.SimpleAction, param):
-        print("app.preferences action activated")
 
     def on_about_action(self, action: Gio.SimpleAction, param):
         about = Adw.AboutWindow(
