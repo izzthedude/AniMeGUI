@@ -13,7 +13,9 @@ class BasePageView(Gtk.ScrolledWindow):
             margin_start=100,
             margin_end=100,
             margin_bottom=30,
-            spacing=30
+            spacing=30,
+            vexpand=True,
+            hexpand=True
         )
         self.set_child(self.content_box)
 

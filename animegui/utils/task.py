@@ -34,12 +34,14 @@ class TaskManager(GObject.Object):
 
         self._source = None
         self._cancellable = Gio.Cancellable()
+        self._is_running: bool = False
 
     def start(self):
         task: Gio.Task = Gio.Task.new(self._source, self._cancellable, self._func_ready_wrapper, None)
         task.set_check_cancellable(True)
         task.set_return_on_cancel(True)
         task.return_error_if_cancelled()
+
         if self._on_finish: self.connect(self.FINISHED, self._on_finish_wrapper)
         if self._on_error: self.connect(self.ERROR, self._on_finish_wrapper)
         task.run_in_thread(self._func_wrapper)
@@ -48,7 +50,10 @@ class TaskManager(GObject.Object):
         self._cancellable.cancel()
 
     def is_cancelled(self):
-        self._cancellable.is_cancelled()
+        return self._cancellable.is_cancelled()
+
+    def is_running(self):
+        return self._is_running
 
     def set_on_finish(self, func, *args, **kwargs):
         self._on_finish = func
@@ -77,6 +82,7 @@ class TaskManager(GObject.Object):
 
         try:
             self.emit(self.STARTED)
+            self._is_running = True
             result = self._func(*self._args, **self._kwargs)
             task.return_value(result)
 
@@ -96,6 +102,7 @@ class TaskManager(GObject.Object):
         # Get result and emit it. Depends on whether an error occurred while running.
         result = task.propagate_value()[1]
         signal = self.FINISHED
+        self._is_running = False
         if isinstance(result, BaseException) or isinstance(result, GLib.Error):
             signal = self.ERROR
         self.emit(signal, result)
@@ -123,3 +130,9 @@ class TaskManager(GObject.Object):
         create_signal(self, self.FINISHED, [object])
         create_signal(self, self.ERROR, [object])  # param_type is Exception
         create_signal(self, self.CANCELLED)
+
+
+def simple_run_async(func, *args, **kwargs):
+    task = TaskManager(func, *args, **kwargs)
+    task.start()
+    return task
