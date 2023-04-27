@@ -1,4 +1,4 @@
-application_id = 'com.github.izzthedude.AniMeGUI'
+application_id = 'io.github.izzthedude.AniMeGUI'
 
 scalable_dir = join_paths('hicolor', 'scalable', 'apps')
 install_data(

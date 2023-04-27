@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="animegui">
+  <schema id="io.github.izzthedude.AniMeGUI" path="/io/github/izzthedude/AniMeGUI/">
+  </schema>
+</schemalist>

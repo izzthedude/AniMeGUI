@@ -7,4 +7,3 @@ class Paths:
     XDG_DATA = os.environ.get("XDG_DATA_HOME")
     USER_PRESETS = os.path.join(XDG_CONFIG, "presets.json")
     FRAME_CACHE = os.path.join(XDG_CACHE, "frame.png")
-    EMOJI_FONT = os.path.join(XDG_DATA, "NotoColorEmoji.ttf")

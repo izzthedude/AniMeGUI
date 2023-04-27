@@ -3,8 +3,8 @@ pkgdatadir = join_paths(get_option('prefix'), get_option('datadir'), meson.proje
 gnome = import('gnome')
 
 desktop_file = i18n.merge_file(
-        input: 'com.github.izzthedude.AniMeGUI.desktop.in',
-       output: 'com.github.izzthedude.AniMeGUI.desktop',
+        input: 'io.github.izzthedude.AniMeGUI.desktop.in',
+       output: 'io.github.izzthedude.AniMeGUI.desktop',
          type: 'desktop',
        po_dir: '../po',
       install: true,
@@ -17,8 +17,8 @@ if desktop_utils.found()
 endif
 
 appstream_file = i18n.merge_file(
-        input: 'com.github.izzthedude.AniMeGUI.appdata.xml.in',
-       output: 'com.github.izzthedude.AniMeGUI.appdata.xml',
+        input: 'io.github.izzthedude.AniMeGUI.appdata.xml.in',
+       output: 'io.github.izzthedude.AniMeGUI.appdata.xml',
        po_dir: '../po',
       install: true,
   install_dir: join_paths(get_option('datadir'), 'appdata')
@@ -29,12 +29,12 @@ if appstream_util.found()
   test('Validate appstream file', appstream_util, args: ['validate', appstream_file])
 endif
 
-install_data('com.github.izzthedude.AniMeGUI.gschema.xml',
+install_data('io.github.izzthedude.AniMeGUI.gschema.xml',
   install_dir: join_paths(get_option('datadir'), 'glib-2.0/schemas')
 )
 
 gnome.compile_resources('animegui',
-  'com.github.izzthedude.AniMeGUI.gresource.xml',
+  'io.github.izzthedude.AniMeGUI.gresource.xml',
   gresource_bundle: true,
   install: true,
   install_dir: pkgdatadir,
@@ -46,10 +46,5 @@ if compile_schemas.found()
        compile_schemas,
        args: ['--strict', '--dry-run', meson.current_source_dir()])
 endif
-
-fonts = [
-  'NotoColorEmoji.ttf'
-]
-install_data(fonts, install_dir: pkgdatadir)
 
 subdir('icons')

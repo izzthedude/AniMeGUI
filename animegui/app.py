@@ -33,7 +33,7 @@ from animegui.utils.gi_helpers import create_action
 class AniMeGUIApplication(Adw.Application):
     def __init__(self):
         super().__init__(
-            application_id="com.github.izzthedude.AniMeGUI",
+            application_id="io.github.izzthedude.AniMeGUI",
             flags=Gio.ApplicationFlags.FLAGS_NONE
         )
         self.app_controller = AppController.instance()
@@ -61,7 +61,7 @@ class AniMeGUIApplication(Adw.Application):
         about = Adw.AboutWindow(
             transient_for=self.props.active_window,
             application_name="animegui",
-            application_icon="com.github.izzthedude.AniMeGUI",
+            application_icon="io.github.izzthedude.AniMeGUI",
             developer_name="Izzat Z.",
             version="0.1.0",
             developers=["Izzat Z."],

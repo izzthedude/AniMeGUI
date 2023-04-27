@@ -25,7 +25,7 @@ from animegui.ui.view_page_live import LivePageView
 from animegui.ui.view_page_presets import PresetsPageView
 
 
-@Gtk.Template(resource_path="/com/github/izzthedude/AniMeGUI/ui/app-window")
+@Gtk.Template(resource_path="/io/github/izzthedude/AniMeGUI/ui/app-window")
 class AniMeGUIAppWindow(Adw.ApplicationWindow):
     __gtype_name__ = "AniMeGUIAppWindow"
 
@@ -56,6 +56,6 @@ class AniMeGUIAppWindow(Adw.ApplicationWindow):
             self.content_stack.add_titled_with_icon(view, name, title, icon)
 
     def _setup_help_overlay(self):
-        builder: Gtk.Builder = Gtk.Builder.new_from_resource("/com/github/izzthedude/AniMeGUI/ui/help-overlay")
+        builder: Gtk.Builder = Gtk.Builder.new_from_resource("/io/github/izzthedude/AniMeGUI/ui/help-overlay")
         shortcuts_window: Gtk.ShortcutsWindow = builder.get_object("help_overlay")
         self.set_help_overlay(shortcuts_window)

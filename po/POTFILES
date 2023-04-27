@@ -1,6 +1,6 @@
-data/com.github.izzthedude.AniMeGUI.desktop.in
-data/com.github.izzthedude.AniMeGUI.appdata.xml.in
-data/com.github.izzthedude.AniMeGUI.gschema.xml
+data/io.github.izzthedude.AniMeGUI.desktop.in
+data/io.github.izzthedude.AniMeGUI.appdata.xml.in
+data/io.github.izzthedude.AniMeGUI.gschema.xml
 animegui/app.py
 animegui/ui/window_app.py
 animegui/window.ui
