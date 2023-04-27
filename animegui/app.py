@@ -60,7 +60,7 @@ class AniMeGUIApplication(Adw.Application):
     def on_about_action(self, action: Gio.SimpleAction, param):
         about = Adw.AboutWindow(
             transient_for=self.props.active_window,
-            application_name="animegui",
+            application_name="AniMeGUI",
             application_icon="io.github.izzthedude.AniMeGUI",
             developer_name="Izzat Z.",
             version="0.1.0",
