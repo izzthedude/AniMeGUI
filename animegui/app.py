@@ -23,7 +23,7 @@ import gi
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Gio, Adw
+from gi.repository import Gio, Adw, Gtk
 
 from animegui.controllers.controller_app import AppController
 from animegui.ui import AniMeGUIAppWindow
@@ -64,8 +64,12 @@ class AniMeGUIApplication(Adw.Application):
             application_icon="io.github.izzthedude.AniMeGUI",
             developer_name="Izzat Z.",
             version="0.1.0",
-            developers=["Izzat Z."],
-            copyright="© 2022 Izzat Z.")
+            developers=["Izzat Z. https://github.com/izzthedude"],
+            copyright="© 2022 Izzat Z.",
+            license_type=Gtk.License.GPL_3_0,
+            website="https://github.com/izzthedude/AniMeGUI",
+            issue_url="https://github.com/izzthedude/AniMeGUI/issues",
+        )
         about.present()
 
     def on_quit_action(self, action: Gio.SimpleAction, param):

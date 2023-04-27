@@ -1,9 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop">
-	<id>io.github.izzthedude.AniMeGUI.desktop</id>
-	<metadata_license>CC0-1.0</metadata_license>
-	<project_license>GPL-3.0-or-later</project_license>
-	<description>
-	  <p>No description</p>
-	</description>
+<component type="desktop-application">
+  <id>io.github.izzthedude.AniMeGUI</id>
+  <name>AniMeGUI</name>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <developer_name>Izzat Z.</developer_name>
+
+  <summary>Control your AniMe Display graphically on Linux!</summary>
+  <description>
+    <p>
+      AniMeGUI is an application for controlling your Zephyrus G14’s AniMe Matrix™ Display graphically on Linux, acting
+      as a GUI wrapper for asusctl. Requires asusctl to be installed in the host system and the AniMe Display (only
+      Zephyrus G14 laptops)
+    </p>
+
+    <p>Features:</p>
+    <ul>
+      <li>Control the AniMe functionalities of asusctl graphically</li>
+      <li>Save presets of your favourite animations/images</li>
+      <li>Use your webcam (if you have one) and display it to the AniMe display</li>
+    </ul>
+  </description>
+
+  <screenshots>
+    <screenshot type="default">
+      <!-- Temporary :P -->
+      <image>
+        http://www.lifewithcatman.com/wp-content/uploads/2018/03/36864327_313751549167486_6001709152500449280_n.jpg
+      </image>
+    </screenshot>
+  </screenshots>
+
+  <releases>
+    <release date="2023-04-27" version="0.1.0">
+      <description>
+        <p>First alpha release</p>
+      </description>
+    </release>
+  </releases>
+
+  <url type="homepage">https://github.com/izzthedude/AniMeGUI</url>
+  <url type="bugtracker">https://github.com/izzthedude/AniMeGUI/issues</url>
+
+  <content_rating type="oars-1.1"/>
+  <launchable type="desktop-id">io.github.izzthedude.AniMeGUI.desktop</launchable>
 </component>

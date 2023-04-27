@@ -1,8 +1,9 @@
 [Desktop Entry]
-Name=animegui
-Exec=animegui
-Icon=io.github.izzthedude.AniMeGUI
-Terminal=false
+Version=1.0
 Type=Application
-Categories=GTK;
-StartupNotify=true
+Name=AniMeGUI
+Comment= Control your AniMe Display graphically on Linux!
+Categories=System;GTK;Graphics
+Icon=io.github.izzthedude.AniMeGUI
+Exec=animegui
+Terminal=false
