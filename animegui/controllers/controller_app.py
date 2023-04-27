@@ -1,3 +1,5 @@
+import os
+
 import math
 from gi.repository import Gio, GObject, Gtk, Adw
 
@@ -55,7 +57,12 @@ class AppController(BaseController):
         # self._view.general_view.presets_dropdown.connect("activate", self._on_presets_loaded)
 
     def on_shutdown(self):
+        # Save presets
         self._presets_controller.commit_presets()
+
+        # Delete the frame cache
+        if os.path.exists(Paths.FRAME_CACHE):
+            os.remove(Paths.FRAME_CACHE)
 
     def _init_live_controller(self):
         # When DeepFace is first imported, it does some checks in the background that takes time
