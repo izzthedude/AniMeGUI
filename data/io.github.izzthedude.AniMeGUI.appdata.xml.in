@@ -9,9 +9,8 @@
   <summary>Control your AniMe Display graphically on Linux!</summary>
   <description>
     <p>
-      AniMeGUI is an application for controlling your Zephyrus G14’s AniMe Matrix™ Display graphically on Linux, acting
-      as a GUI wrapper for asusctl. Requires asusctl to be installed in the host system and the AniMe Display (only
-      Zephyrus G14 laptops)
+      AniMeGUI is a GUI wrapper for asusctl for controlling the AniMe Matrix™ Display graphically on Linux. Requires
+      asusctl to be installed in the host system and the AniMe Display (only Zephyrus G14 laptops)
     </p>
 
     <p>Features:</p>
@@ -20,6 +19,10 @@
       <li>Save presets of your favourite animations/images</li>
       <li>Use your webcam (if you have one) and display it to the AniMe display</li>
     </ul>
+
+    <p>
+      This project is not officially affiliated with either ASUS or the asus-linux team.
+    </p>
   </description>
 
   <screenshots>
