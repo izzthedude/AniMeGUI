@@ -59,7 +59,7 @@ class AniMeGUIApplication(Adw.Application):
             application_name="AniMeGUI",
             application_icon="io.github.izzthedude.AniMeGUI",
             developer_name="Izzat Z.",
-            version="0.1.0",
+            version="0.1.0-alpha",
             developers=["Izzat Z. https://github.com/izzthedude"],
             copyright="© 2022 Izzat Z.",
             license_type=Gtk.License.GPL_3_0,
