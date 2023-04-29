@@ -24,20 +24,13 @@ installed in the host system and the AniMe Display (only Zephyrus G14 laptops).
 
 ## Installation
 
-**Currently the only supported way of installing this app is by using GNOME Builder. There are plans to at least include
-the flatpak file in this repository so that you can just download that and install it.**
-
-1. Open GNOME Builder and select `Clone Repository`
-2. In the `Repository URL` field, copy and paste this repo's URL: `https://github.com/izzthedude/AniMeGUI` and
-   click `Clone Repository`
-3. Navigate to this menu, click `Build`, wait for it to finish, then click `Export` (this may take a while)
-   ![](docs/installation_export.png)
-4. After the export finishes, it should open the file manager and highlight the flatpak file. Double-click it (this will
-   open GNOME Software) and click `Install`
-5. It will ask for authentication twice (idk why). Just enter your password and wait for it to install (this may also
-   take a
-   little while)
-6. Launch the app (either from GNOME Software or the app grid or whatever)
+1. Download
+   the [flatpak](https://github.com/izzthedude/AniMeGUI/releases/download/v0.1.0-alpha/io.github.izzthedude.AniMeGUI.flatpak).
+   This can be found in this repo's [Releases](https://github.com/izzthedude/AniMeGUI/releases).
+2. Install the flatpak with one of two ways:
+    - Double-click on the flatpak file and install it through the software centre app. This will ask for authentication
+      twice due to flatpak needing to configure stuff to install it.
+    - Open a terminal and run: `flatpak --user install /path/to/io.github.izzthedude.AniMeGUI.flatpak`
 
 ## Development
 
